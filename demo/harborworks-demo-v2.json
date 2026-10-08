@@ -1,0 +1,775 @@
+{
+  "format_version": 1,
+  "fictional": true,
+  "batch_key": "harborworks-demo-v2",
+  "seed": 84,
+  "anchor_date": "2026-10-07",
+  "people": [
+    {
+      "key": "manager",
+      "name": "Morgan Ellis",
+      "email": "morgan@harborworks.example",
+      "role": "Manager"
+    },
+    {
+      "key": "finance",
+      "name": "Jordan Chen",
+      "email": "jordan@harborworks.example",
+      "role": "Finance"
+    },
+    {
+      "key": "tampa",
+      "name": "Sam Patel",
+      "email": "sam.patel@harborworks.example",
+      "role": "Contributor"
+    },
+    {
+      "key": "atlanta",
+      "name": "Taylor Reed",
+      "email": "taylor.reed@harborworks.example",
+      "role": "Contributor"
+    },
+    {
+      "key": "dallas",
+      "name": "Jamie Ortiz",
+      "email": "jamie.ortiz@harborworks.example",
+      "role": "Contributor"
+    }
+  ],
+  "ideas": [
+    {
+      "external_key": "harborworks-demo-v2:fasteners",
+      "created_at": "2026-10-01T14:00:00Z",
+      "creator_key": "tampa",
+      "owner_key": "tampa",
+      "fields": {
+        "title": "Pool standard fastener orders for Tampa assembly cells",
+        "problem": "Fictional HarborWorks: three assembly cells buy the same M8 and M10 fasteners in separate small orders. Freight minimums and price breaks add an estimated $28,000 per year; supplier invoices need review before approval.",
+        "solution": "Combine weekly requirements into one blanket order while retaining two weeks of safety stock. Compare landed unit cost and stockouts during a six-week pilot.",
+        "site_id": "Tampa",
+        "category_id": "Procurement",
+        "annual_gross": "28000.00",
+        "annual_recurring": "2000.00",
+        "upfront": "4500.00",
+        "probability": "0.75",
+        "confidence": "0.55",
+        "expected_start": "2026-11-02",
+        "expected_finish": "2026-12-18"
+      },
+      "actions": [
+        {
+          "kind": "comment",
+          "actor_key": "tampa",
+          "occurred_at": "2026-10-01T14:00:00Z",
+          "data": {
+            "body": "Fictional HarborWorks Manufacturing showcase batch v2. Estimates require validation; no approved forecast or achieved value is claimed."
+          }
+        }
+      ]
+    },
+    {
+      "external_key": "harborworks-demo-v2:stretch-film",
+      "created_at": "2026-09-29T14:00:00Z",
+      "creator_key": "atlanta",
+      "owner_key": "atlanta",
+      "fields": {
+        "title": "Specify one stretch-film grade for Atlanta pallet wrapping",
+        "problem": "Fictional HarborWorks: Atlanta uses four stretch-film grades with overlapping specifications. Inconsistent gauge increases film consumption and prevents a consolidated supplier quotation.",
+        "solution": "Test one film specification against load stability and damage limits, then tender annual volume. Include operator training and an allowance for periodic load testing.",
+        "site_id": "Atlanta",
+        "category_id": "Procurement",
+        "annual_gross": "36000.00",
+        "annual_recurring": "3000.00",
+        "upfront": "6500.00",
+        "probability": "0.70",
+        "confidence": "0.60",
+        "expected_start": "2026-11-02",
+        "expected_finish": "2026-12-18"
+      },
+      "actions": [
+        {
+          "kind": "comment",
+          "actor_key": "atlanta",
+          "occurred_at": "2026-09-29T14:00:00Z",
+          "data": {
+            "body": "Fictional HarborWorks Manufacturing showcase batch v2. Estimates require validation; no approved forecast or achieved value is claimed."
+          }
+        }
+      ]
+    },
+    {
+      "external_key": "harborworks-demo-v2:dock-slots",
+      "created_at": "2026-10-05T14:00:00Z",
+      "creator_key": "dallas",
+      "owner_key": "dallas",
+      "fields": {
+        "title": "Reserve Dallas dock slots for scheduled customer pickups",
+        "problem": "Fictional HarborWorks: customer trucks arrive without booked slots at Dallas. Queueing creates detention charges and forces the afternoon dispatch team to reschedule loading.",
+        "solution": "Pilot two-hour pickup windows with the five largest customers and publish a shared loading roster. Measure detention invoices, departure punctuality and missed pickups.",
+        "site_id": "Dallas",
+        "category_id": "Freight",
+        "annual_gross": "42000.00",
+        "annual_recurring": "6000.00",
+        "upfront": "8000.00",
+        "probability": "0.65",
+        "confidence": "0.50",
+        "expected_start": "2026-11-02",
+        "expected_finish": "2026-12-18"
+      },
+      "actions": [
+        {
+          "kind": "comment",
+          "actor_key": "dallas",
+          "occurred_at": "2026-10-05T14:00:00Z",
+          "data": {
+            "body": "Fictional HarborWorks Manufacturing showcase batch v2. Estimates require validation; no approved forecast or achieved value is claimed."
+          }
+        }
+      ]
+    },
+    {
+      "external_key": "harborworks-demo-v2:idle-conveyors",
+      "created_at": "2026-09-25T14:00:00Z",
+      "creator_key": "tampa",
+      "owner_key": "tampa",
+      "fields": {
+        "title": "Stop idle Tampa conveyors between production waves",
+        "problem": "Fictional HarborWorks: takeaway conveyors run through breaks and gaps between assembly waves. A preliminary power survey suggests avoidable motor hours but requires a measured baseline.",
+        "solution": "Trial timed stop controls with safe restart interlocks. Meter consumption by shift and check that restart delays do not restrict output.",
+        "site_id": "Tampa",
+        "category_id": "Energy",
+        "annual_gross": "22000.00",
+        "annual_recurring": "1500.00",
+        "upfront": "7000.00",
+        "probability": "0.80",
+        "confidence": "0.60",
+        "expected_start": "2026-11-02",
+        "expected_finish": "2026-12-18"
+      },
+      "actions": [
+        {
+          "kind": "comment",
+          "actor_key": "tampa",
+          "occurred_at": "2026-09-25T14:00:00Z",
+          "data": {
+            "body": "Fictional HarborWorks Manufacturing showcase batch v2. Estimates require validation; no approved forecast or achieved value is claimed."
+          }
+        }
+      ]
+    },
+    {
+      "external_key": "harborworks-demo-v2:first-carton",
+      "created_at": "2026-10-02T14:00:00Z",
+      "creator_key": "atlanta",
+      "owner_key": "atlanta",
+      "fields": {
+        "title": "Check the first carton after each Atlanta label change",
+        "problem": "Fictional HarborWorks: label-template changes are checked only after a full pallet is packed. An incorrect barcode can cause rework of hundreds of cartons before detection.",
+        "solution": "Introduce a scanned first-carton check and a second-person sign-off at template changes. Track rejected labels, rework minutes and throughput during the pilot.",
+        "site_id": "Atlanta",
+        "category_id": "Scrap/Quality",
+        "annual_gross": "31000.00",
+        "annual_recurring": "4000.00",
+        "upfront": "5500.00",
+        "probability": "0.75",
+        "confidence": "0.55",
+        "expected_start": "2026-11-02",
+        "expected_finish": "2026-12-18"
+      },
+      "actions": [
+        {
+          "kind": "comment",
+          "actor_key": "atlanta",
+          "occurred_at": "2026-10-02T14:00:00Z",
+          "data": {
+            "body": "Fictional HarborWorks Manufacturing showcase batch v2. Estimates require validation; no approved forecast or achieved value is claimed."
+          }
+        }
+      ]
+    },
+    {
+      "external_key": "harborworks-demo-v2:scanner-cradles",
+      "created_at": "2026-09-23T14:00:00Z",
+      "creator_key": "dallas",
+      "owner_key": "dallas",
+      "fields": {
+        "title": "Place charged scanner cradles at Dallas picking zones",
+        "problem": "Fictional HarborWorks: pickers walk to a central desk when handheld scanners discharge mid-shift. Estimated lost time is based on observations rather than an approved productivity baseline.",
+        "solution": "Install charging cradles and a spare-device rotation at four picking zones. Measure walking time and picks per paid hour, converting released time to savings only when staffing plans support it.",
+        "site_id": "Dallas",
+        "category_id": "Productivity",
+        "annual_gross": "48000.00",
+        "annual_recurring": "5000.00",
+        "upfront": "11000.00",
+        "probability": "0.70",
+        "confidence": "0.50",
+        "expected_start": "2026-11-02",
+        "expected_finish": "2026-12-18"
+      },
+      "actions": [
+        {
+          "kind": "comment",
+          "actor_key": "dallas",
+          "occurred_at": "2026-09-23T14:00:00Z",
+          "data": {
+            "body": "Fictional HarborWorks Manufacturing showcase batch v2. Estimates require validation; no approved forecast or achieved value is claimed."
+          }
+        }
+      ]
+    },
+    {
+      "external_key": "harborworks-demo-v2:coolant-contract",
+      "created_at": "2026-09-04T14:00:00Z",
+      "creator_key": "manager",
+      "owner_key": "tampa",
+      "fields": {
+        "title": "Bundle coolant deliveries for Tampa machining suppliers",
+        "problem": "Fictional HarborWorks: two coolant distributors deliver half-full loads to Tampa on different days, with separate handling charges and short-notice replenishment.",
+        "solution": "Evaluate a consolidated delivery agreement with usage-based replenishment. Validate compatibility, storage limits and landed price before developing an approved plan.",
+        "site_id": "Tampa",
+        "category_id": "Procurement",
+        "annual_gross": "26000.00",
+        "annual_recurring": "2500.00",
+        "upfront": "4000.00",
+        "probability": "0.70",
+        "confidence": "0.65",
+        "expected_start": "2026-11-02",
+        "expected_finish": "2026-12-18"
+      },
+      "actions": [
+        {
+          "kind": "transition",
+          "actor_key": "tampa",
+          "occurred_at": "2026-09-08T14:00:00Z",
+          "data": {
+            "action": "Screening",
+            "reason": "Fictional site sponsor and accountable owner confirmed."
+          }
+        },
+        {
+          "kind": "edit",
+          "actor_key": "tampa",
+          "occurred_at": "2026-09-09T14:00:00Z",
+          "data": {
+            "screening_note": "Maintenance sponsor identified; current coolant specifications and delivery invoices are available for screening."
+          }
+        },
+        {
+          "kind": "comment",
+          "actor_key": "tampa",
+          "occurred_at": "2026-09-10T14:00:00Z",
+          "data": {
+            "body": "Fictional HarborWorks Manufacturing showcase batch v2. Estimates require validation; no approved forecast or achieved value is claimed."
+          }
+        }
+      ]
+    },
+    {
+      "external_key": "harborworks-demo-v2:dock-seals",
+      "created_at": "2026-09-07T14:00:00Z",
+      "creator_key": "manager",
+      "owner_key": "atlanta",
+      "fields": {
+        "title": "Repair leaking Atlanta refrigerated dock seals",
+        "problem": "Fictional HarborWorks: worn seals at two temperature-controlled docks let warm air enter during loading. Refrigeration load rises in hot weather and temperature excursions need investigation.",
+        "solution": "Survey gaps, replace seals and compare weather-adjusted compressor electricity. Include seal inspections and verify food-grade storage temperatures are maintained.",
+        "site_id": "Atlanta",
+        "category_id": "Energy",
+        "annual_gross": "39000.00",
+        "annual_recurring": "3000.00",
+        "upfront": "18000.00",
+        "probability": "0.80",
+        "confidence": "0.60",
+        "expected_start": "2026-11-02",
+        "expected_finish": "2026-12-18"
+      },
+      "actions": [
+        {
+          "kind": "transition",
+          "actor_key": "atlanta",
+          "occurred_at": "2026-09-11T14:00:00Z",
+          "data": {
+            "action": "Screening",
+            "reason": "Fictional site sponsor and accountable owner confirmed."
+          }
+        },
+        {
+          "kind": "edit",
+          "actor_key": "atlanta",
+          "occurred_at": "2026-09-12T14:00:00Z",
+          "data": {
+            "screening_note": "Facilities owner confirmed; electricity meters and door-open logs will support a weather-adjusted baseline."
+          }
+        },
+        {
+          "kind": "comment",
+          "actor_key": "atlanta",
+          "occurred_at": "2026-09-13T14:00:00Z",
+          "data": {
+            "body": "Fictional HarborWorks Manufacturing showcase batch v2. Estimates require validation; no approved forecast or achieved value is claimed."
+          }
+        }
+      ]
+    },
+    {
+      "external_key": "harborworks-demo-v2:torque-fixture",
+      "created_at": "2026-09-10T14:00:00Z",
+      "creator_key": "manager",
+      "owner_key": "dallas",
+      "fields": {
+        "title": "Fit a poka-yoke torque fixture to Dallas final assembly",
+        "problem": "Fictional HarborWorks: a reversed component orientation causes torque failures during final inspection at Dallas. Rework and component scrap are recorded but not separated by root cause.",
+        "solution": "Trial an orientation fixture with calibrated torque confirmation on one station. Confirm the defect baseline and ergonomic fit before costing a wider rollout.",
+        "site_id": "Dallas",
+        "category_id": "Scrap/Quality",
+        "annual_gross": "56000.00",
+        "annual_recurring": "4500.00",
+        "upfront": "24000.00",
+        "probability": "0.70",
+        "confidence": "0.55",
+        "expected_start": "2026-11-02",
+        "expected_finish": "2026-12-18"
+      },
+      "actions": [
+        {
+          "kind": "transition",
+          "actor_key": "dallas",
+          "occurred_at": "2026-09-14T14:00:00Z",
+          "data": {
+            "action": "Screening",
+            "reason": "Fictional site sponsor and accountable owner confirmed."
+          }
+        },
+        {
+          "kind": "edit",
+          "actor_key": "dallas",
+          "occurred_at": "2026-09-15T14:00:00Z",
+          "data": {
+            "screening_note": "Quality sponsor accepts a one-station trial; defect tags will separate orientation failures from other rejects."
+          }
+        },
+        {
+          "kind": "comment",
+          "actor_key": "dallas",
+          "occurred_at": "2026-09-16T14:00:00Z",
+          "data": {
+            "body": "Fictional HarborWorks Manufacturing showcase batch v2. Estimates require validation; no approved forecast or achieved value is claimed."
+          }
+        }
+      ]
+    },
+    {
+      "external_key": "harborworks-demo-v2:return-backhauls",
+      "created_at": "2026-07-16T14:00:00Z",
+      "creator_key": "manager",
+      "owner_key": "tampa",
+      "fields": {
+        "title": "Pair Tampa supplier returns with inbound carrier backhauls",
+        "problem": "Fictional HarborWorks: empty returnable stillages travel on dedicated outbound trips while inbound suppliers dispatch trucks with unused return capacity. Lane overlap needs commercial validation.",
+        "solution": "Match weekly stillage returns to inbound backhaul routes and request carrier quotations. Assess inventory turnaround and damage risk before saving an approved schedule.",
+        "site_id": "Tampa",
+        "category_id": "Freight",
+        "annual_gross": "68000.00",
+        "annual_recurring": "9000.00",
+        "upfront": "14000.00",
+        "probability": "0.65",
+        "confidence": "0.60",
+        "expected_start": "2026-11-02",
+        "expected_finish": "2026-12-18"
+      },
+      "actions": [
+        {
+          "kind": "transition",
+          "actor_key": "tampa",
+          "occurred_at": "2026-07-20T14:00:00Z",
+          "data": {
+            "action": "Screening",
+            "reason": "Fictional site sponsor and accountable owner confirmed."
+          }
+        },
+        {
+          "kind": "edit",
+          "actor_key": "tampa",
+          "occurred_at": "2026-07-21T14:00:00Z",
+          "data": {
+            "screening_note": "Inbound and return routes overlap on two lanes; awaiting carrier quotations and a measured stillage turnaround baseline."
+          }
+        },
+        {
+          "kind": "transition",
+          "actor_key": "tampa",
+          "occurred_at": "2026-07-24T14:00:00Z",
+          "data": {
+            "action": "Analysis",
+            "reason": "Screening accepted; validate the baseline, supplier costs and operational risks."
+          }
+        },
+        {
+          "kind": "comment",
+          "actor_key": "tampa",
+          "occurred_at": "2026-07-25T14:00:00Z",
+          "data": {
+            "body": "Fictional HarborWorks Manufacturing showcase batch v2. Estimates require validation; no approved forecast or achieved value is claimed."
+          }
+        }
+      ]
+    },
+    {
+      "external_key": "harborworks-demo-v2:kit-sequence",
+      "created_at": "2026-08-03T14:00:00Z",
+      "creator_key": "manager",
+      "owner_key": "atlanta",
+      "fields": {
+        "title": "Sequence Atlanta repair kits before the technician shift",
+        "problem": "Fictional HarborWorks: repair technicians collect parts after their shift starts, causing queues and repeated stockroom visits. Released technician time may increase capacity rather than reduce payroll.",
+        "solution": "Prepare job-specific kits from the next-day schedule and trial a completeness check. Validate capacity gains separately from cash savings before approving the business case.",
+        "site_id": "Atlanta",
+        "category_id": "Productivity",
+        "annual_gross": "74000.00",
+        "annual_recurring": "10000.00",
+        "upfront": "16000.00",
+        "probability": "0.70",
+        "confidence": "0.55",
+        "expected_start": "2026-11-02",
+        "expected_finish": "2026-12-18"
+      },
+      "actions": [
+        {
+          "kind": "transition",
+          "actor_key": "atlanta",
+          "occurred_at": "2026-08-07T14:00:00Z",
+          "data": {
+            "action": "Screening",
+            "reason": "Fictional site sponsor and accountable owner confirmed."
+          }
+        },
+        {
+          "kind": "edit",
+          "actor_key": "atlanta",
+          "occurred_at": "2026-08-08T14:00:00Z",
+          "data": {
+            "screening_note": "Two weeks of stockroom observations collected; distinguish released capacity from cash-releasing labor savings."
+          }
+        },
+        {
+          "kind": "transition",
+          "actor_key": "atlanta",
+          "occurred_at": "2026-08-11T14:00:00Z",
+          "data": {
+            "action": "Analysis",
+            "reason": "Screening accepted; validate the baseline, supplier costs and operational risks."
+          }
+        },
+        {
+          "kind": "comment",
+          "actor_key": "atlanta",
+          "occurred_at": "2026-08-12T14:00:00Z",
+          "data": {
+            "body": "Fictional HarborWorks Manufacturing showcase batch v2. Estimates require validation; no approved forecast or achieved value is claimed."
+          }
+        }
+      ]
+    },
+    {
+      "external_key": "harborworks-demo-v2:emergency-freight",
+      "created_at": "2026-06-01T14:00:00Z",
+      "creator_key": "manager",
+      "owner_key": "dallas",
+      "fields": {
+        "title": "Reduce Dallas emergency freight with a daily dispatch cutoff",
+        "problem": "Fictional HarborWorks: late order amendments trigger premium emergency vehicles from Dallas even when next-day contracted capacity is available. The baseline identifies $12,000 per month of avoidable premiums at steady state, subject to service-level protection.",
+        "solution": "Introduce a daily release cutoff, reserve contracted overflow capacity and review true emergencies with customer service. Track premium invoices and on-time delivery; retain a separately controlled exception route.",
+        "site_id": "Dallas",
+        "category_id": "Freight",
+        "annual_gross": "144000.00",
+        "annual_recurring": "12000.00",
+        "upfront": "12000.00",
+        "probability": "0.75",
+        "confidence": "0.70",
+        "expected_start": "2026-08-01",
+        "expected_finish": "2026-11-30"
+      },
+      "actions": [
+        {
+          "kind": "transition",
+          "actor_key": "dallas",
+          "occurred_at": "2026-06-05T14:00:00Z",
+          "data": {
+            "action": "Screening",
+            "reason": "Fictional site sponsor and accountable owner confirmed."
+          }
+        },
+        {
+          "kind": "edit",
+          "actor_key": "dallas",
+          "occurred_at": "2026-06-06T14:00:00Z",
+          "data": {
+            "screening_note": "Eight-week premium-freight invoice baseline validated; service owner accepts a staged cutoff trial with protected urgent exceptions."
+          }
+        },
+        {
+          "kind": "transition",
+          "actor_key": "dallas",
+          "occurred_at": "2026-06-09T14:00:00Z",
+          "data": {
+            "action": "Analysis",
+            "reason": "Screening accepted; validate the baseline, supplier costs and operational risks."
+          }
+        },
+        {
+          "kind": "plan",
+          "actor_key": "manager",
+          "occurred_at": "2026-07-24T14:00:00Z",
+          "data": {
+            "annual_gross": "144000.00",
+            "annual_recurring": "12000.00",
+            "upfront": "12000.00",
+            "probability": "0.75",
+            "confidence": "0.70",
+            "rationale": "Fictional approved case: premium-invoice baseline, 50%/75%/100% benefit ramp from August, customer service reviews, and $12,000 project spend allocated $8,000/$4,000. Expected completion 30 November; USD. Annual potential is not achieved savings.",
+            "periods": [
+              {
+                "month": "2026-08-01",
+                "gross": "6000.00",
+                "recurring": "500.00",
+                "spend": "8000.00"
+              },
+              {
+                "month": "2026-09-01",
+                "gross": "9000.00",
+                "recurring": "750.00",
+                "spend": "4000.00"
+              },
+              {
+                "month": "2026-10-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              },
+              {
+                "month": "2026-11-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              },
+              {
+                "month": "2026-12-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              },
+              {
+                "month": "2027-01-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              },
+              {
+                "month": "2027-02-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              },
+              {
+                "month": "2027-03-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              },
+              {
+                "month": "2027-04-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              },
+              {
+                "month": "2027-05-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              },
+              {
+                "month": "2027-06-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              },
+              {
+                "month": "2027-07-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              },
+              {
+                "month": "2027-08-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              },
+              {
+                "month": "2027-09-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              },
+              {
+                "month": "2027-10-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              },
+              {
+                "month": "2027-11-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              },
+              {
+                "month": "2027-12-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              },
+              {
+                "month": "2028-01-01",
+                "gross": "12000.00",
+                "recurring": "1000.00",
+                "spend": "0.00"
+              }
+            ]
+          }
+        },
+        {
+          "kind": "transition",
+          "actor_key": "manager",
+          "occurred_at": "2026-07-24T14:00:00Z",
+          "data": {
+            "action": "Approved",
+            "reason": "Approve the explicit staged plan and preserve the agreed on-time-delivery safeguard."
+          }
+        },
+        {
+          "kind": "task",
+          "actor_key": "manager",
+          "occurred_at": "2026-07-28T14:00:00Z",
+          "data": {
+            "task_key": "cutoff-pilot",
+            "title": "Launch the cutoff pilot and brief customer service",
+            "assignee_key": "dallas",
+            "due_date": "2026-08-14",
+            "status": "Open",
+            "required": true
+          }
+        },
+        {
+          "kind": "task",
+          "actor_key": "manager",
+          "occurred_at": "2026-07-28T14:00:00Z",
+          "data": {
+            "task_key": "carrier-review",
+            "title": "Validate overflow carrier rates and weekly service performance",
+            "assignee_key": "dallas",
+            "due_date": "2026-11-15",
+            "status": "Open",
+            "required": true
+          }
+        },
+        {
+          "kind": "edit",
+          "actor_key": "manager",
+          "occurred_at": "2026-08-01T14:00:00Z",
+          "data": {
+            "actual_start": "2026-08-01"
+          }
+        },
+        {
+          "kind": "transition",
+          "actor_key": "manager",
+          "occurred_at": "2026-08-01T14:00:00Z",
+          "data": {
+            "action": "Implementation",
+            "reason": "Named owner, recorded actual start and required delivery tasks are in place."
+          }
+        },
+        {
+          "kind": "task",
+          "actor_key": "dallas",
+          "occurred_at": "2026-08-14T14:00:00Z",
+          "data": {
+            "task_key": "cutoff-pilot",
+            "title": "Launch the cutoff pilot and brief customer service",
+            "assignee_key": "dallas",
+            "due_date": "2026-08-14",
+            "status": "Done",
+            "required": true
+          }
+        },
+        {
+          "kind": "result",
+          "actor_key": "finance",
+          "occurred_at": "2026-09-04T14:00:00Z",
+          "data": {
+            "month": "2026-08-01",
+            "gross": "4200.00",
+            "recurring": "500.00",
+            "spend": "8000.00",
+            "reason": "Fictional August invoices: adoption reached 35% versus the approved 50% ramp; all pilot setup spend recorded."
+          }
+        },
+        {
+          "kind": "verify",
+          "actor_key": "finance",
+          "occurred_at": "2026-09-05T14:00:00Z",
+          "data": {
+            "month": "2026-08-01",
+            "gross": "4200.00",
+            "recurring": "500.00",
+            "spend": "8000.00",
+            "reason": "Fictional review confirms August premiums avoided, customer-service cost and setup invoices."
+          }
+        },
+        {
+          "kind": "task",
+          "actor_key": "dallas",
+          "occurred_at": "2026-10-02T14:00:00Z",
+          "data": {
+            "task_key": "carrier-review",
+            "title": "Validate overflow carrier rates and weekly service performance",
+            "assignee_key": "dallas",
+            "due_date": "2026-11-15",
+            "status": "In progress",
+            "required": true
+          }
+        },
+        {
+          "kind": "edit",
+          "actor_key": "dallas",
+          "occurred_at": "2026-10-02T14:00:00Z",
+          "data": {
+            "progress": 65
+          }
+        },
+        {
+          "kind": "result",
+          "actor_key": "finance",
+          "occurred_at": "2026-10-03T14:00:00Z",
+          "data": {
+            "month": "2026-09-01",
+            "gross": "7200.00",
+            "recurring": "750.00",
+            "spend": "4000.00",
+            "reason": "Fictional September adoption below the 75% plan; reported premium reductions await Finance confirmation."
+          }
+        },
+        {
+          "kind": "comment",
+          "actor_key": "dallas",
+          "occurred_at": "2026-10-04T14:00:00Z",
+          "data": {
+            "body": "Fictional HarborWorks Manufacturing showcase batch v2. August is Finance-confirmed; September remains unverified for live review."
+          }
+        }
+      ]
+    }
+  ]
+}

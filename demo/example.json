@@ -1,0 +1,23 @@
+{
+  "format_version": 1,
+  "batch_key": "example-additive-v1",
+  "seed": 1,
+  "anchor_date": "2026-10-07",
+  "fictional": true,
+  "people": [
+    {"key":"manager","name":"Casey Brooks","email":"casey@example-ideaflow.invalid","role":"Manager"},
+    {"key":"owner","name":"Robin Lee","email":"robin@example-ideaflow.invalid","role":"Contributor"}
+  ],
+  "ideas": [{
+    "external_key":"example-additive-v1:cartons",
+    "created_at":"2026-08-01T14:00:00Z",
+    "creator_key":"manager",
+    "owner_key":"owner",
+    "fields":{"title":"Reuse returnable cartons at Tampa","problem":"Single-use cartons add avoidable handling and purchasing cost.","solution":"Pilot returnable cartons with two local customers.","site_id":"Tampa","category_id":"Procurement","annual_gross":"24000","annual_recurring":"3000","upfront":"5000","probability":"0.7","confidence":"0.6"},
+    "actions":[
+      {"kind":"transition","actor_key":"owner","occurred_at":"2026-08-05T14:00:00Z","data":{"action":"Screening","reason":"Pilot sponsor identified."}},
+      {"kind":"edit","actor_key":"owner","occurred_at":"2026-08-06T14:00:00Z","data":{"screening_note":"Customer return route is available."}},
+      {"kind":"transition","actor_key":"owner","occurred_at":"2026-08-08T14:00:00Z","data":{"action":"Analysis","reason":"Prepare the monthly cost and benefit plan."}}
+    ]
+  }]
+}

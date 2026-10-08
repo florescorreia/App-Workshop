@@ -1,0 +1,12 @@
+name: ideaflow-verification
+services:
+  frontend:
+    ports: !override
+      - '127.0.0.1:8081:80'
+  backend:
+    volumes: !override
+      - ./demo:/demo:ro
+      - ./artifacts/verification-handover:/handover
+volumes:
+  pgdata:
+    name: ideaflow_verification_pgdata
