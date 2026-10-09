@@ -1,0 +1,25 @@
+[Unit]
+Description=IdeaFlow React frontend and nginx
+PartOf=app-ideaflow.target
+Requires=ideaflow-backend.service
+After=ideaflow-backend.service
+StartLimitIntervalSec=0
+
+[Container]
+Image=@FRONTEND_IMAGE@
+ContainerName=ideaflow-frontend
+Network=ideaflow.network
+NetworkAlias=frontend
+PublishPort=127.0.0.1:18081:80
+HealthCmd=wget -q --spider http://127.0.0.1/api/health/ready
+HealthInterval=10s
+HealthTimeout=3s
+HealthRetries=6
+HealthStartPeriod=20s
+PodmanArgs=--memory=128m --cpus=0.5 --log-driver=k8s-file --log-opt=max-size=10mb --health-on-failure=kill
+
+[Service]
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=180
+ExecStartPost=/home/ideaflow/bin/wait-container.sh ideaflow-frontend

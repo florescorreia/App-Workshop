@@ -1,0 +1,7 @@
+[Unit]
+Description=IdeaFlow application (frontend, backend, PostgreSQL)
+Requires=ideaflow-postgres.service ideaflow-backend.service ideaflow-frontend.service
+After=ideaflow-postgres.service ideaflow-backend.service ideaflow-frontend.service
+
+[Install]
+WantedBy=default.target

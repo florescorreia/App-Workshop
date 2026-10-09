@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Application stacks</title>
+  <script src="../base1/cockpit.js"></script>
+  <script src="index.js" defer></script>
+  <style>
+    body {font:16px system-ui,sans-serif;margin:32px;color:#18212b;background:#f5f7fa}
+    h1 {font-size:26px} table {width:100%;border-collapse:collapse;background:white}
+    th,td {padding:16px;text-align:left;border-bottom:1px solid #ddd}
+    button {padding:8px 16px;margin-right:8px;cursor:pointer}
+    #message {white-space:pre-wrap} .hint {color:#485766;max-width:900px}
+  </style>
+</head>
+<body>
+  <h1>Application stacks</h1>
+  <p class="hint">Start or stop every container in an application together. Stopping retains its persistent data. This page manages stacks belonging to your signed-in Linux account.</p>
+  <button id="refresh">Refresh</button>
+  <p id="message" role="status" aria-live="polite"></p>
+  <table><thead><tr><th>Application</th><th>Status</th><th>Actions</th></tr></thead><tbody id="stacks"></tbody></table>
+  <p class="hint">Use Podman containers for live container resource usage and logs. Application groups appear here after deployment.</p>
+</body>
+</html>

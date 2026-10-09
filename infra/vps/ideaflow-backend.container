@@ -1,0 +1,30 @@
+[Unit]
+Description=IdeaFlow FastAPI backend
+PartOf=app-ideaflow.target
+Requires=ideaflow-postgres.service
+After=ideaflow-postgres.service
+StartLimitIntervalSec=0
+
+[Container]
+Image=@BACKEND_IMAGE@
+ContainerName=ideaflow-backend
+Network=ideaflow.network
+NetworkAlias=backend
+EnvironmentFile=/home/ideaflow/.config/ideaflow/backend.env
+Volume=/home/ideaflow/demo:/demo:ro
+Volume=/home/ideaflow/handover:/handover
+Volume=/home/ideaflow/bin/healthcheck.py:/healthcheck.py:ro
+Volume=/home/ideaflow/bin/launch-backend.sh:/launch-backend.sh:ro
+Exec=/bin/sh /launch-backend.sh
+HealthCmd=python /healthcheck.py
+HealthInterval=10s
+HealthTimeout=3s
+HealthRetries=6
+HealthStartPeriod=30s
+PodmanArgs=--memory=768m --cpus=1 --log-driver=k8s-file --log-opt=max-size=10mb --health-on-failure=kill
+
+[Service]
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=180
+ExecStartPost=/home/ideaflow/bin/wait-container.sh ideaflow-backend

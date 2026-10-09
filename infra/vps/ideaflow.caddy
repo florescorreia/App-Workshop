@@ -1,0 +1,30 @@
+vps-8104e6c8.vps.ovh.us:8443 {
+    header {
+        -Server
+        -Via
+        Strict-Transport-Security "max-age=86400"
+        Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+    }
+    @private_paths path /api/docs /api/docs/* /api/openapi.json /api/openapi.json/* */.*
+    respond @private_paths "Not found" 404
+    reverse_proxy 127.0.0.1:18081 {
+        header_down -Server
+        header_down -Via
+    }
+    log {
+        output file /var/log/caddy/ideaflow-access.log {
+            roll_size 10MiB
+            roll_keep 5
+            roll_keep_for 168h
+        }
+    }
+}
+
+# HSTS upgrades port-80 navigation to 443; retain a safe HTTPS redirect.
+vps-8104e6c8.vps.ovh.us {
+    header {
+        -Server
+        Strict-Transport-Security "max-age=86400"
+    }
+    redir https://vps-8104e6c8.vps.ovh.us:8443{uri} 308
+}

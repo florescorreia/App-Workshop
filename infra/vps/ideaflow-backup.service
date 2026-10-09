@@ -1,0 +1,6 @@
+[Unit]
+Description=IdeaFlow private database backup
+
+[Service]
+Type=oneshot
+ExecStart=/home/ideaflow/bin/backup.sh

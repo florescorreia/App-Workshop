@@ -1,4 +1,4 @@
-import hashlib, secrets
+import hashlib, secrets, os
 from datetime import timedelta
 from fastapi import Depends, HTTPException, Request
 from sqlalchemy import select
@@ -9,8 +9,13 @@ from .models import User, Session
 hasher = PasswordHasher()
 def digest(token): return hashlib.sha256(token.encode()).hexdigest()
 
+def cookie_name(): return os.getenv('SESSION_COOKIE_NAME','ideaflow_session')
+
+def secure_cookie(request):
+    return os.getenv('SESSION_COOKIE_SECURE','').lower()=='true' or request.url.scheme=='https'
+
 def current_user(request: Request, db=Depends(get_db)):
-    token = request.cookies.get('ideaflow_session','')
+    token = request.cookies.get(cookie_name(),'')
     session = db.get(Session, digest(token))
     if not session or session.expires_at <= now(): raise HTTPException(401,'Sign in to continue')
     user = db.get(User,session.user_id)

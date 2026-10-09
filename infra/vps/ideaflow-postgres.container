@@ -1,0 +1,24 @@
+[Unit]
+Description=IdeaFlow PostgreSQL
+PartOf=app-ideaflow.target
+StartLimitIntervalSec=0
+
+[Container]
+Image=@POSTGRES_IMAGE@
+ContainerName=ideaflow-postgres
+Network=ideaflow.network
+NetworkAlias=postgres
+EnvironmentFile=/home/ideaflow/.config/ideaflow/postgres.env
+Volume=ideaflow-pgdata:/var/lib/postgresql/data
+HealthCmd=pg_isready -U ideaflow_migrator -d ideaflow
+HealthInterval=10s
+HealthTimeout=3s
+HealthRetries=6
+HealthStartPeriod=20s
+PodmanArgs=--memory=1536m --cpus=1.5 --log-driver=k8s-file --log-opt=max-size=10mb --health-on-failure=kill
+
+[Service]
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=180
+ExecStartPost=/home/ideaflow/bin/wait-container.sh ideaflow-postgres

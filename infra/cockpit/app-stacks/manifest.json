@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "menu": {
+    "index": { "label": "Application stacks", "order": 51 }
+  }
+}

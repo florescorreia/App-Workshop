@@ -1,5 +1,7 @@
 # IdeaFlow
 
+VPS deployment: **https://vps-8104e6c8.vps.ovh.us:8443**. Your current local accounts and business history were copied on 2026-10-09; existing passwords work. Access credentials are persisted in Windows **User** environment variables. See [VPS operation and credentials](docs/VPS_IDEAFLOW.md) and [verification evidence](docs/VERIFICATION.md). Local and VPS databases are independent after that snapshot; no demo was loaded during deployment.
+
 IdeaFlow turns improvement proposals into assigned work, approved monthly plans and reviewed outcomes. React/TypeScript and bundled Plotly/React Flow run behind nginx; FastAPI and PostgreSQL are the other two long-running services. Version 1.0.0. The runtime has no external API dependency.
 
 The local application starts **empty**, with only the bootstrap Admin. Locations, categories and business units are defined by users as work develops; no prior Admin setup is needed. The live workspace was explicitly cleared on 2026-10-09 after a verified backup, retaining the Admin login and all configuration/volumes. Old HarborWorks showcase guides are historical evidence; their records are no longer loaded. Start with the [manual UX walkthrough](docs/UX_WALKTHROUGH.md), written for an existing User account, with optional Admin exercises at the end. Durable records, sessions, approved snapshots, results and append-only events live in `ideaflow_pgdata`.

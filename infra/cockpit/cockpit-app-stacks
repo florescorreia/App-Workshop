@@ -1,0 +1,43 @@
+#!/usr/bin/python3
+"""Manage only the signed-in user's explicitly named app-*.target units."""
+import json
+import re
+import subprocess
+import sys
+
+
+def systemctl(*args):
+    return subprocess.run(
+        ["/usr/bin/systemctl", "--user", *args],
+        check=True, capture_output=True, text=True, timeout=180,
+    ).stdout
+
+
+def units():
+    return {
+        row["unit_file"] for row in json.loads(
+            systemctl("list-unit-files", "--type=target", "--output=json", "--no-pager")
+        ) if re.fullmatch(r"app-[a-z0-9][a-z0-9-]*\.target", row["unit_file"])
+    }
+
+
+try:
+    command = sys.argv[1:]
+    available = units()
+    if command == ["list"]:
+        result = []
+        for name in sorted(available):
+            fields = dict(line.split("=", 1) for line in systemctl(
+                "show", name, "--property=Description,ActiveState"
+            ).splitlines() if "=" in line)
+            result.append({"unit": name, "description": fields.get("Description", name),
+                           "state": fields.get("ActiveState", "unknown")})
+        print(json.dumps(result))
+    elif len(command) == 2 and command[0] in ("start", "stop") and command[1] in available:
+        systemctl(command[0], command[1])
+        print(json.dumps({"ok": True}))
+    else:
+        raise ValueError("Unknown action or application stack")
+except (ValueError, subprocess.SubprocessError) as error:
+    print(getattr(error, "stderr", None) or str(error), file=sys.stderr)
+    sys.exit(1)

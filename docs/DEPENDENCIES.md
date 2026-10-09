@@ -1,5 +1,7 @@
 # Third-party dependency inventory
 
+VPS operations additionally use a transient Python SSH tool container with Paramiko 4.0.0 (LGPL-2.1), cryptography 50.0.2 (Apache-2.0/BSD), bcrypt 5.0.0 (Apache-2.0), PyNaCl 1.6.2 (Apache-2.0), CFFI 2.1.1 (MIT), pycparser 3.11 (BSD) and Invoke 3.0.3 (BSD). Versions are locked in `infra/vps-tools/requirements.lock`; this container is not a long-running application service. The VPS's existing Podman/Caddy/Cockpit packages remain as documented in the foundation handovers.
+
 Dependencies are pinned in `frontend/package-lock.json` and `backend/requirements.lock`; the backend lock includes transitive packages observed in the container. Full package/version/license metadata is committed in `frontend-dependencies.json` and `backend-dependencies.json`. These are inventories, not legal advice. Upstream LICENSE texts remain in installed packages/images.
 
 | Component | Version | License / purpose |

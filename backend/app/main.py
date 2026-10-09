@@ -9,7 +9,7 @@ from sqlalchemy.exc import IntegrityError
 from .db import get_db, now
 from .models import User, Session, Idea, Site, Category, Task, Comment, IdeaEvent, PlanPeriod, ValuePeriod, DemoBatch
 from . import schemas as S, domain as D
-from .auth import current_user, require, public_user, hasher, digest
+from .auth import current_user, require, public_user, hasher, digest, cookie_name, secure_cookie
 from .queries import serialize, idea_row, selected_ideas, value_dashboard, idea_value_dashboard
 from .financial import ramp, app_today
 from .process import discover
@@ -25,7 +25,8 @@ def api_docs():
 async def origin_defense(request,call_next):
     if request.method not in ('GET','HEAD','OPTIONS'):
         origin=request.headers.get('origin')
-        if origin and origin != str(request.base_url).rstrip('/'):
+        expected_origin=os.getenv('APP_ORIGIN') or str(request.base_url).rstrip('/')
+        if origin and origin != expected_origin:
             return __import__('starlette.responses',fromlist=['JSONResponse']).JSONResponse({'detail':'Same-origin requests required'},403)
     response=await call_next(request)
     response.headers['X-Content-Type-Options']='nosniff'
@@ -53,14 +54,14 @@ def login(data:S.Login,response:Response,request:Request,db=Depends(get_db)):
     if not valid: raise HTTPException(401,'Email or password is incorrect')
     token=secrets.token_urlsafe(32);csrf=secrets.token_urlsafe(32)
     db.add(Session(token_hash=digest(token),user_id=user.id,csrf=csrf,expires_at=now()+timedelta(hours=12)))
-    response.set_cookie('ideaflow_session',token,httponly=True,samesite='strict',secure=request.url.scheme=='https',max_age=43200,path='/')
+    response.set_cookie(cookie_name(),token,httponly=True,samesite='strict',secure=secure_cookie(request),max_age=43200,path='/')
     return {'user':public_user(user),'csrf':csrf,'timezone':os.getenv('APP_TIMEZONE','America/New_York')}
 @app.get(P+'/session/me')
 def me(request:Request,user=Depends(current_user)):
     return {'user':public_user(user),'csrf':request.state.session.csrf,'timezone':os.getenv('APP_TIMEZONE','America/New_York')}
 @app.post(P+'/session/logout')
 def logout(response:Response,request:Request,user=Depends(current_user),db=Depends(get_db)):
-    db.delete(request.state.session);response.delete_cookie('ideaflow_session');return {'ok':True}
+    db.delete(request.state.session);response.delete_cookie(cookie_name(),path='/',secure=secure_cookie(request),httponly=True,samesite='strict');return {'ok':True}
 @app.post(P+'/users')
 def create_user(data:S.UserCreate,user=Depends(current_user),db=Depends(get_db)):
     require(user,'Admin')
