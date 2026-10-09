@@ -1,7 +1,7 @@
 import argparse, os, hashlib, json
 from sqlalchemy import create_engine, text
 
-TABLES=['idea','idea_event','financial_plan','financial_plan_period','value_period','task','comment','demo_batch','app_user']
+TABLES=['idea','idea_event','financial_plan','financial_plan_period','value_period','task','comment','demo_batch','app_user','site','category','account_event']
 def fingerprints(engine):
     result={}
     with engine.connect() as c:

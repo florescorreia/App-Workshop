@@ -1,3 +1,7 @@
+> Historical evidence: the live workspace was explicitly emptied on 2026-10-09. These idea links/counts and role labels describe the archived showcase, not current live data. Use [UX_WALKTHROUGH.md](UX_WALKTHROUGH.md) for the new two-role experience.
+
+For a practice presentation, use ordinary ideas and retain their references. Hypothetical financial amounts contribute to shared totals until Admin reviews and removes those records through **Admin actions → Remove idea**. All evidence remains inspectable/restorable under **Settings → Removed ideas**. The in-app Walkthrough explains this method.
+
 # Eight-minute HarborWorks Manufacturing showcase
 
 V2 was subsequently added without changing v1. This guide's financial/count examples describe the original v1 baseline; the current combined workspace has 72 ideas. See [the v2 guide](DEMO_V2_GUIDE.md) for the 12 actual new references, combined totals and a short New → Screening → Analysis walkthrough.

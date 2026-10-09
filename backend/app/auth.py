@@ -14,7 +14,7 @@ def current_user(request: Request, db=Depends(get_db)):
     session = db.get(Session, digest(token))
     if not session or session.expires_at <= now(): raise HTTPException(401,'Sign in to continue')
     user = db.get(User,session.user_id)
-    if not user or not user.active: raise HTTPException(401,'Account is inactive')
+    if not user or not user.active or user.deleted_at: raise HTTPException(401,'Account is inactive')
     if request.method not in ('GET','HEAD','OPTIONS'):
         if not secrets.compare_digest(request.headers.get('X-CSRF-Token',''),session.csrf):
             raise HTTPException(403,'Session check failed. Refresh and try again.')
@@ -25,4 +25,4 @@ def require(user,*roles):
     if user.role not in roles: raise HTTPException(403,'This action requires ' + ' or '.join(roles))
 
 def public_user(user):
-    return {k:getattr(user,k) for k in ('id','name','email','role','active','record_version')}
+    return {k:getattr(user,k) for k in ('id','name','email','role','active','record_version','deleted_at')}

@@ -1,10 +1,14 @@
+Account controls amendment: migration 0003 adds nullable app_user.deleted_at and account_event (actor FK, plain subject ID/name, action, UTC time, reason). Retired actors retain name/ID and cannot log in; unused accounts may be removed without changing business history. Account events are append-only, independent of lifecycle process discovery, and exclude secrets.
+
+Current amendment (2026-10-09): accounts use User/Admin; idea site_id/category_id are nullable. Sites/categories add normalized unique label_key, record_version and nullable merged_into; active merged sources remain only as redirects. The UI calls sites Locations. See the current PRD amendment and migration 0002.
+
 # Data dictionary and metric definitions
 
 All IDs are UUID strings except reference-list codes, case sequence integers, readable references and normalized first-of-month dates. Timestamps use PostgreSQL timezone-aware columns and UTC; UI displays America/New_York by default. USD money is `NUMERIC(18,2)`. Nullable amounts mean unassessed/unknown. Nonnegative components may produce negative net benefit or cash flow. PostgreSQL foreign keys, unique keys, checks and snapshot/audit triggers enforce domain integrity.
 
 | Table | Purpose and key constraints |
 | --- | --- |
-| app_user | Name, unique email, four roles, Argon2 password hash, active and record_version. Hashes never returned. |
+| app_user | Name, unique email, User/Admin roles, Argon2 password hash, active and record_version. Hashes never returned. |
 | app_session | SHA-256 cookie token digest, user FK, random CSRF token and expiration. |
 | site | Code/label, business unit and active flag. |
 | category | Code/label and active flag. |
@@ -18,6 +22,11 @@ All IDs are UUID strings except reference-list codes, case sequence integers, re
 | demo_batch | Unique batch key, seed, anchor date, importer, counts and recorded time. |
 | alembic_version | Applied schema revision; readiness checks current revision. |
 
+Migration **0005** allows Admin removal of any idea; all nonremoved ideas belong to the same workspace/analytics/exports. The old `is_test` column remains only to preserve historical rows/backups and is neither exposed as a current idea field nor used for filtering. Old `idea_scope` query parameters are ignored. Earlier marking/removal events remain unchanged.
+
+`removed_at`, `removed_by` (retained account FK) and `removal_reason` require complete removal metadata and a nonempty reason. Admin commands `/ideas/{id}/remove` and `/ideas/{id}/restore` require a reason, optimistic version and `confirm: true`. Events `IDEA_REMOVED`/`IDEA_RESTORED` retain actor/time/reason without changing lifecycle stage/disposition. Restoration may record explicit inactive-account reassignments through `ASSIGNED`/`TASK_CHANGED`.
+
+Every ordinary view/export excludes removed records. Admin's `/api/v1/removed-ideas` endpoint searches/paginates the archive; `/ideas/{id}/removal-preview` shows the impact, and removed detail is Admin-only/read-only. Restored records rejoin the shared workspace and totals. Fictional import keys/provenance, financial evidence and events remain retained. There is no hard-delete endpoint.
 Annual net potential = annual steady-state gross − annual recurring cost. Upfront implementation cost is excluded. It is never combined with period totals.
 
 Monthly net benefit = gross − recurring; net cash flow = net benefit − implementation spend. Planned values come from approved rows; actuals and verification are independently recorded. Missing results are unknown. Risk-adjusted expected benefit = expected net × probability, with confidence reported independently.
@@ -27,3 +36,6 @@ ROI over a labeled horizon = `(sum(net benefit) − sum(spend)) / sum(spend) × 
 Coverage counts eligible elapsed months in included current approved schedules, reported matched months and verified matched months. Full-horizon forecasts are separate from matched-cohort comparisons. On-hold forecasts are included by default and can be excluded in Value. Rejected/Cancelled forecasts are excluded; achieved historical value remains available. Charts preserve gaps for unreported months and are accompanied by tables.
 
 Process calendar residence includes hold time; active residence subtracts explicitly held intervals. A resume continues a visit, while stage re-entry creates another. Completed medians/p90 exclude open visits. Fewer than five visits is Small sample. Edge performance measures elapsed time between observed activities, with sample counts; a stage is evaluated from completed visits plus separately labeled ongoing aging. Backward moves include Realized corrections and exclude hold/resume.
+
+
+Idea detail financials default to the current approved schedule (latest saved draft before approval) plus outcome months, falling back to idea dates/current month. The read-only /api/v1/ideas/{id}/value endpoint accepts first-of-month start/end dates with the existing 120-month maximum. Evidence range controls persist as value_start/value_end in the idea URL without refetching/resetting editable forms. Cumulative series restart at the chosen start and preserve unknown gaps; drafts never enter expected value. Portfolio date defaults and formulas are unchanged.

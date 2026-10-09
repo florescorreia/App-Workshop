@@ -15,7 +15,7 @@ class DemoPerson(Input):
     key: str
     name: str
     email: str
-    role: Literal['Contributor','Manager','Finance','Admin']
+    role: Literal['User','Contributor','Manager','Finance','Admin']
 
 class DemoAction(Input):
     occurred_at: datetime
@@ -58,15 +58,17 @@ class DemoDataset(Input):
 def replay(db,user,dataset,credentials):
     people={}
     for p in dataset.people:
+        role='Admin' if p.role=='Admin' else 'User'
         existing=db.scalar(select(User).where(User.email==p.email.lower()))
         if existing:
-            if existing.name!=p.name or existing.role!=p.role:D.fail('Fictional account collides with an existing user; use a distinct email')
+            if existing.deleted_at or not existing.active:D.fail('Fictional account is deleted or inactive; use a distinct email')
+            if existing.name!=p.name or existing.role!=role:D.fail('Fictional account collides with an existing user; use a distinct email')
             people[p.key]=existing
         else:
             password=secrets.token_urlsafe(18)
-            obj=User(name=p.name,email=p.email.lower(),role=p.role,password_hash=hasher.hash(password))
+            obj=User(name=p.name,email=p.email.lower(),role=role,password_hash=hasher.hash(password))
             db.add(obj);db.flush();people[p.key]=obj
-            credentials.append({'name':p.name,'email':p.email.lower(),'role':p.role,'password':password})
+            credentials.append({'name':p.name,'email':p.email.lower(),'role':role,'password':password})
     batch=DemoBatch(batch_key=dataset.batch_key,seed=dataset.seed,anchor_date=dataset.anchor_date,importer=user.id)
     db.add(batch);db.flush();references=[]
     provenance={'fictional':True,'batch_key':dataset.batch_key,'seed':dataset.seed,'anchor_date':dataset.anchor_date.isoformat()}
@@ -79,7 +81,7 @@ def replay(db,user,dataset,credentials):
             actor=people[action.actor_key];data=dict(action.data);ts=action.occurred_at
             if 'record_version' in data or 'period_version' in data:D.fail('Importer derives record versions; remove client versions')
             if action.kind=='edit':
-                allowed={k:getattr(idea,k) for k in IdeaUpdate.model_fields if k!='record_version'}
+                allowed={k:getattr(idea,k) for k in IdeaUpdate.model_fields if k not in ('record_version','site_name','category_name')}
                 if 'owner_key' in data:data['owner_id']=people[data.pop('owner_key')].id
                 D.update_idea(db,actor,idea,IdeaUpdate.model_validate({**allowed,**data,'record_version':idea.record_version}),ts,provenance)
             elif action.kind=='transition':

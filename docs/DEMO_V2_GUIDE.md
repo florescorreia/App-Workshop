@@ -1,3 +1,5 @@
+> Historical evidence: the live workspace was explicitly emptied on 2026-10-09. These idea links/counts and role labels describe the archived showcase, not current live data. Use [UX_WALKTHROUGH.md](UX_WALKTHROUGH.md) for the new two-role experience.
+
 # HarborWorks v2 — additive import and live walkthrough
 
 The batch **harborworks-demo-v2**, seed **84**, anchor **2026-10-07** was explicitly imported at **http://localhost:8080**. Proposed source: [demo/harborworks-demo-v2.json](../demo/harborworks-demo-v2.json). The original v1 batch and all existing records remain untouched. Architecture, images and configuration are unchanged; only the existing importer wrote new business records.

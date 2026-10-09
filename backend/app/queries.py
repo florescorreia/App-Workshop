@@ -5,10 +5,10 @@ from .models import Idea, Site, User, FinancialPlan, PlanPeriod, ValuePeriod, Ta
 from .domain import plans, approved_plan, scalar_json
 from .financial import app_today, add_month, net, sum_known, schedule_metrics, roi
 
-def serialize(obj): return {c.name:scalar_json(getattr(obj,c.name)) for c in obj.__table__.columns}
+def serialize(obj): return {c.name:scalar_json(getattr(obj,c.name)) for c in obj.__table__.columns if c.name!='is_test'}
 
-def selected_ideas(db,filters):
-    q=select(Idea).join(Site,Idea.site_id==Site.id)
+def selected_ideas(db,filters,removed=False):
+    q=select(Idea).outerjoin(Site,Idea.site_id==Site.id).where(Idea.removed_at.is_not(None) if removed else Idea.removed_at.is_(None))
     for key in ('site_id','category_id','owner_id','stage','disposition'):
         if filters.get(key): q=q.where(getattr(Idea,key)==filters[key])
     if filters.get('business_unit'): q=q.where(Site.business_unit==filters['business_unit'])
@@ -23,9 +23,23 @@ def selected_ideas(db,filters):
 
 def idea_row(db,idea):
     ps=plans(db,idea);latest=ps[-1] if ps else None
-    return {**serialize(idea),'owner_name':db.get(User,idea.owner_id).name,'site':db.get(Site,idea.site_id).label,
+    return {**serialize(idea),'owner_name':db.get(User,idea.owner_id).name,'site':db.get(Site,idea.site_id).label if idea.site_id else 'Unassigned',
         'annual_net_potential':scalar_json(net(latest.annual_gross,latest.annual_recurring)) if latest else None,
         'stage_age_days':round((__import__('app.db',fromlist=['now']).now()-idea.stage_entered_at).total_seconds()/86400,1)}
+
+def idea_value_dashboard(db,idea,start=None,end=None):
+    """Use the current financial schedule and results, rather than a calendar year."""
+    ps=plans(db,idea);plan=approved_plan(db,idea) or (ps[-1] if ps else None)
+    months=list(db.scalars(select(PlanPeriod.month).where(PlanPeriod.plan_id==plan.id))) if plan else []
+    months+=list(db.scalars(select(ValuePeriod.month).where(ValuePeriod.idea_id==idea.id)))
+    if not months:
+        months=[d.replace(day=1) for d in (idea.expected_start,idea.expected_finish,idea.actual_start,idea.actual_completion) if d]
+    if not months:months=[app_today().replace(day=1)]
+    first,last=min(months),max(months)
+    clipped=(last.year-first.year)*12+last.month-first.month>119
+    if clipped:first=add_month(last,-119)
+    result=value_dashboard(db,[idea],start or first,end or last)
+    return {**result,'idea_timeline':{'start':first,'end':last,'clipped':clipped}}
 
 def value_dashboard(db,ideas,start=None,end=None,include_hold=True,as_of=None):
     today=app_today();start=start or today.replace(month=1,day=1);end=end or today.replace(month=12,day=1)

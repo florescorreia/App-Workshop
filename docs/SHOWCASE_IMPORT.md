@@ -1,3 +1,5 @@
+> Historical evidence: the live workspace was explicitly emptied on 2026-10-09. These idea links/counts and role labels describe the archived showcase, not current live data. Use [UX_WALKTHROUGH.md](UX_WALKTHROUGH.md) for the new two-role experience.
+
 # HarborWorks live import evidence
 
 Explicitly authorized additive import executed **2026-10-07**, anchor **2026-10-07** in the running application's **America/New_York** timezone. Batch **harborworks-demo-v1**, seed **42**. URL **http://localhost:8080**, verified Rancher Desktop Moby context **default**, production project **ideaflow**. Only frontend, backend and postgres run permanently. Data remains in **ideaflow_pgdata**; no reset, volume removal or existing-record overwrite occurred.

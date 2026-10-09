@@ -10,7 +10,7 @@ from .db import get_db, now
 from .models import User, Session, Idea, Site, Category, Task, Comment, IdeaEvent, PlanPeriod, ValuePeriod, DemoBatch
 from . import schemas as S, domain as D
 from .auth import current_user, require, public_user, hasher, digest
-from .queries import serialize, idea_row, selected_ideas, value_dashboard
+from .queries import serialize, idea_row, selected_ideas, value_dashboard, idea_value_dashboard
 from .financial import ramp, app_today
 from .process import discover
 
@@ -40,14 +40,14 @@ async def integrity_handler(request,exc):
 def live(): return {'status':'live','version':'1.0.0'}
 @app.get('/api/health/ready')
 def ready(db=Depends(get_db)):
-    if db.scalar(text('SELECT version_num FROM alembic_version'))!='0001': raise HTTPException(503,'Migration not ready')
+    if db.scalar(text('SELECT version_num FROM alembic_version'))!='0005': raise HTTPException(503,'Migration not ready')
     return {'status':'ready','version':'1.0.0'}
 
 @app.post(P+'/session/login')
 def login(data:S.Login,response:Response,request:Request,db=Depends(get_db)):
-    user=db.scalar(select(User).where(User.email==data.email.lower()))
+    user=db.scalar(select(User).where(User.email==data.email.lower()).with_for_update())
     valid=False
-    if user and user.active:
+    if user and user.active and not user.deleted_at:
         try: valid=hasher.verify(user.password_hash,data.password)
         except Exception: pass
     if not valid: raise HTTPException(401,'Email or password is incorrect')
@@ -65,25 +65,66 @@ def logout(response:Response,request:Request,user=Depends(current_user),db=Depen
 def create_user(data:S.UserCreate,user=Depends(current_user),db=Depends(get_db)):
     require(user,'Admin')
     u=User(**data.model_dump(exclude={'password'}),password_hash=hasher.hash(data.password));u.email=u.email.lower()
-    db.add(u);db.flush();return public_user(u)
+    db.add(u);db.flush()
+    from .accounts import audit
+    audit(db,user,u,'ACCOUNT_CREATED')
+    return public_user(u)
 @app.put(P+'/users/{user_id}')
 def update_user(user_id:str,data:S.UserUpdate,user=Depends(current_user),db=Depends(get_db)):
-    require(user,'Admin');u=db.scalar(select(User).where(User.id==user_id).with_for_update())
-    if not u: D.fail('User not found',404)
-    if u.record_version!=data.record_version:D.fail('User changed; refresh before saving',409)
+    from .accounts import account,audit,revoke_sessions
+    u=account(db,user,user_id,data.record_version)
     if u.id==user.id and (not data.active or data.role!='Admin'):D.fail('Keep your own Admin account active')
+    if u.email==os.environ['ADMIN_EMAIL'].lower() and (not data.active or data.role!='Admin'):D.fail('Keep the bootstrap Admin active')
+    previous={'name':u.name,'role':u.role,'active':u.active}
     u.name=data.name;u.role=data.role;u.active=data.active;u.record_version+=1
-    if data.password:u.password_hash=hasher.hash(data.password)
+    if data.password:
+        u.password_hash=hasher.hash(data.password);revoke_sessions(db,u.id)
+        audit(db,user,u,'PASSWORD_SET')
+    if not data.active:revoke_sessions(db,u.id)
+    changes={k:{'old':v,'new':getattr(u,k)} for k,v in previous.items() if getattr(u,k)!=v}
+    if changes:audit(db,user,u,'ACCOUNT_UPDATED',__import__('json').dumps(changes))
     return public_user(u)
+
+@app.get(P+'/users/{user_id}/deletion-preview')
+def account_deletion_preview(user_id:str,user=Depends(current_user),db=Depends(get_db)):
+    from .accounts import account,deletion_preview
+    return deletion_preview(db,user,account(db,user,user_id))
+
+@app.delete(P+'/users/{user_id}')
+def delete_account(user_id:str,data:S.AccountCommand,user=Depends(current_user),db=Depends(get_db)):
+    from .accounts import account,remove
+    return remove(db,user,account(db,user,user_id,data.record_version),data)
+
+@app.post(P+'/users/{user_id}/regenerate-password')
+def regenerate_account_password(user_id:str,data:S.AccountCommand,user=Depends(current_user),db=Depends(get_db)):
+    from .accounts import account,regenerate
+    return regenerate(db,user,account(db,user,user_id,data.record_version),data)
+
+@app.get(P+'/account-events')
+def account_events(user=Depends(current_user),db=Depends(get_db)):
+    from .models import AccountEvent
+    require(user,'Admin')
+    return [{**serialize(e),'actor_name':db.get(User,e.actor_id).name} for e in db.scalars(select(AccountEvent).order_by(AccountEvent.occurred_at.desc()).limit(100))]
 @app.get(P+'/references')
 def refs(user=Depends(current_user),db=Depends(get_db)):
-    return {'sites':[serialize(x) for x in db.scalars(select(Site))],'categories':[serialize(x) for x in db.scalars(select(Category))],
+    return {'sites':[serialize(x) for x in db.scalars(select(Site).where(Site.active==True).order_by(Site.label))],'categories':[serialize(x) for x in db.scalars(select(Category).where(Category.active==True).order_by(Category.label))],
         'users':[public_user(x) for x in db.scalars(select(User).order_by(User.name))],'stages':D.STAGES}
 @app.post(P+'/references/{kind}')
 def create_reference(kind:str,data:S.ReferenceInput,user=Depends(current_user),db=Depends(get_db)):
-    require(user,'Admin');cls={'sites':Site,'categories':Category}.get(kind)
-    if not cls:D.fail('Unknown reference type',404)
-    obj=cls(**data.model_dump(exclude=set() if kind=='sites' else {'business_unit'}));db.add(obj);db.flush();return serialize(obj)
+    from .classifications import resolve, model
+    id=resolve(db,kind,data.id,data.label,data.business_unit,legacy=True)
+    return serialize(db.get(model(kind),id))
+
+@app.put(P+'/references/{kind}/{reference_id}')
+def rename_reference(kind:str,reference_id:str,data:S.ReferenceUpdate,user=Depends(current_user),db=Depends(get_db)):
+    from .classifications import modify
+    return modify(db,user,kind,reference_id,data)
+
+@app.post(P+'/references/{kind}/{reference_id}/merge')
+def merge_reference(kind:str,reference_id:str,data:S.ReferenceMerge,user=Depends(current_user),db=Depends(get_db)):
+    from .classifications import modify
+    return modify(db,user,kind,reference_id,data,True)
+
 
 def filters(request):
     result=dict(request.query_params)
@@ -128,16 +169,47 @@ def export_events(request:Request,all_events:bool=False,user=Depends(current_use
         'recorded_at':e.recorded_at.isoformat(),'provenance':str(e.provenance or ''),'event_type':e.event_type} for e in events if all_events or e.event_type in D.LIFECYCLE]
     return csv_response(rows,['case_id','activity','timestamp','resource','sequence','recorded_at','provenance','event_type'],'ideaflow-events.csv')
 
+@app.get(P+'/removed-ideas')
+def removed_ideas(request:Request,page:int=Query(1,ge=1),page_size:int=Query(20,ge=1,le=100),user=Depends(current_user),db=Depends(get_db)):
+    require(user,'Admin')
+    ideas=sorted(selected_ideas(db,filters(request),removed=True),key=lambda i:(i.removed_at,i.id),reverse=True)
+    return {'items':[{**idea_row(db,i),'removed_by_name':db.get(User,i.removed_by).name} for i in ideas[(page-1)*page_size:page*page_size]],'total':len(ideas),'page':page,'page_size':page_size}
+
+@app.get(P+'/ideas/{idea_id}/removal-preview')
+def removal_preview(idea_id:str,user=Depends(current_user),db=Depends(get_db)):
+    require(user,'Admin')
+    from .idea_removal import preview
+    return preview(db,user,D.lock_idea(db,idea_id,allow_removed=True))
+
+@app.post(P+'/ideas/{idea_id}/remove')
+def remove_idea(idea_id:str,data:S.IdeaRemovalCommand,user=Depends(current_user),db=Depends(get_db)):
+    require(user,'Admin')
+    from .idea_removal import remove
+    return idea_row(db,remove(db,user,D.lock_idea(db,idea_id,data.record_version),data))
+
+@app.post(P+'/ideas/{idea_id}/restore')
+def restore_idea(idea_id:str,data:S.RestoreIdea,user=Depends(current_user),db=Depends(get_db)):
+    require(user,'Admin')
+    from .idea_removal import restore
+    return idea_row(db,restore(db,user,D.lock_idea(db,idea_id,data.record_version,allow_removed=True),data))
+
 @app.get(P+'/ideas/{idea_id}')
 def get_idea(idea_id:str,user=Depends(current_user),db=Depends(get_db)):
-    idea=D.lock_idea(db,idea_id)
+    idea=D.lock_idea(db,idea_id,allow_removed=True)
+    if idea.removed_at: require(user,'Admin')
     ps=D.plans(db,idea)
     return {**idea_row(db,idea),'plans':[{**serialize(p),'periods':[serialize(r) for r in db.scalars(select(PlanPeriod).where(PlanPeriod.plan_id==p.id).order_by(PlanPeriod.month))]} for p in ps],
         'results':[serialize(r) for r in db.scalars(select(ValuePeriod).where(ValuePeriod.idea_id==idea.id).order_by(ValuePeriod.month))],
         'tasks':[serialize(t) for t in db.scalars(select(Task).where(Task.idea_id==idea.id).order_by(Task.due_date))],
         'comments':[{**serialize(c),'actor_name':db.get(User,c.actor_id).name} for c in db.scalars(select(Comment).where(Comment.idea_id==idea.id).order_by(Comment.created_at))],
         'events':[{**serialize(e),'actor_name':db.get(User,e.actor_id).name} for e in db.scalars(select(IdeaEvent).where(IdeaEvent.idea_id==idea.id).order_by(IdeaEvent.occurred_at,IdeaEvent.sequence,IdeaEvent.id))],
-        'transitions':D.allowed(db,user,idea),'financials':value_dashboard(db,[idea])}
+        'transitions':D.allowed(db,user,idea),'financials':idea_value_dashboard(db,idea)}
+
+@app.get(P+'/ideas/{idea_id}/value')
+def idea_value(idea_id:str,start:date|None=None,end:date|None=None,user=Depends(current_user),db=Depends(get_db)):
+    idea=D.lock_idea(db,idea_id,allow_removed=True)
+    if idea.removed_at:require(user,'Admin')
+    return idea_value_dashboard(db,idea,start,end)
 @app.put(P+'/ideas/{idea_id}')
 def edit_idea(idea_id:str,data:S.IdeaUpdate,user=Depends(current_user),db=Depends(get_db)):
     idea=D.lock_idea(db,idea_id,data.record_version);return idea_row(db,D.update_idea(db,user,idea,data))
@@ -149,7 +221,7 @@ def move(idea_id:str,data:S.Transition,user=Depends(current_user),db=Depends(get
     idea=D.lock_idea(db,idea_id,data.record_version);return idea_row(db,D.transition(db,user,idea,data))
 @app.post(P+'/ideas/{idea_id}/assignment')
 def assign(idea_id:str,data:S.Assignment,user=Depends(current_user),db=Depends(get_db)):
-    require(user,'Manager','Admin');idea=D.lock_idea(db,idea_id,data.record_version)
+    require(user,'User','Admin');idea=D.lock_idea(db,idea_id,data.record_version)
     D.references(db,idea.site_id,idea.category_id,data.owner_id);old=idea.owner_id;idea.owner_id=data.owner_id
     D.event(db,idea,user,'ASSIGNED',changes={'owner_id':{'old':old,'new':data.owner_id}});return idea_row(db,idea)
 @app.post(P+'/ideas/{idea_id}/tasks')
@@ -208,9 +280,10 @@ def process(request:Request,as_of:str|None=None,basis:str=Query('calendar',patte
     ideas=selected_ideas(db,filters(request));events=list(db.scalars(select(IdeaEvent).where(IdeaEvent.idea_id.in_([i.id for i in ideas]))))
     return discover(ideas,events,parse_as_of(as_of),basis,completed_only)
 @app.get(P+'/my-work')
-def my_work(user=Depends(current_user),db=Depends(get_db)):
-    ideas=list(db.scalars(select(Idea).where(Idea.owner_id==user.id,Idea.disposition.in_(['Active','On hold']),Idea.stage!='Realized').order_by(Idea.expected_finish)))
-    return {'ideas':[idea_row(db,i) for i in ideas],'tasks':[{**serialize(t),'reference':db.get(Idea,t.idea_id).reference} for t in db.scalars(select(Task).where(Task.assignee_id==user.id,Task.status!='Done').order_by(Task.due_date))]}
+def my_work(request:Request,user=Depends(current_user),db=Depends(get_db)):
+    selected=selected_ideas(db,filters(request));ids=[i.id for i in selected]
+    ideas=sorted([i for i in selected if i.owner_id==user.id and i.disposition in ('Active','On hold') and i.stage!='Realized'],key=lambda i:i.expected_finish or date.max)
+    return {'ideas':[idea_row(db,i) for i in ideas],'tasks':[{**serialize(t),'reference':db.get(Idea,t.idea_id).reference} for t in db.scalars(select(Task).where(Task.idea_id.in_(ids),Task.assignee_id==user.id,Task.status!='Done').order_by(Task.due_date))]}
 
 @app.post(P+'/demo/import')
 def demo_import(data:dict,dry_run:bool=True,user=Depends(current_user),db=Depends(get_db)):

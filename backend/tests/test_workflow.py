@@ -36,15 +36,15 @@ def test_dashboard_drilldowns_pagination_and_decimal_totals(clients):
     ids=','.join(portfolio['active_ids'])
     assert a.get(P+'/ideas',params={'ids':ids}).json()['total']==portfolio['active_count']
 
-def test_end_to_end_roles_results_and_rework(clients):
-    a,m,f,c=(clients[r] for r in ('Admin','Manager','Finance','Contributor'))
+def test_user_end_to_end_results_and_rework(clients):
+    a=clients['Admin'];m=f=c=clients['User']
     owner=c.get(P+'/session/me').json()['user']['id']
     idea=make(a,owner_id=owner);id=idea['id']
     assert move(c,id,'Screening').status_code==200
     assert move(c,id,'Analysis').status_code==422
     assert update(c,id,screening_note='Measurable opportunity').status_code==200
     assert move(c,id,'Analysis').status_code==200
-    assert move(c,id,'Approved').status_code==403
+    assert move(c,id,'Approved').status_code==422
     today=app_today();start=today.replace(month=1,day=1)
     assert update(m,id,expected_start=start.isoformat(),expected_finish=today.isoformat()).status_code==200
     assert save_plan(m,id).status_code==200
@@ -64,10 +64,8 @@ def test_end_to_end_roles_results_and_rework(clients):
     result={'record_version':get(a,id)['record_version'],'period_version':0,'gross':'10000','recurring':'1000','spend':'0'}
     rr=f.put(path,json=result);assert rr.status_code==200
     verify={'record_version':get(a,id)['record_version'],'period_version':rr.json()['record_version'],'gross':'9900','recurring':'1000','spend':'0','reason':'Meter adjustment'}
-    assert c.post(path+'/verify',json=verify).status_code==403
     assert f.post(path+'/verify',json=verify).status_code==200
     assert move(f,id,'Realized',verification_through=month,confirm_completion=True).status_code==200
-    assert move(m,id,'Validation').status_code==403
     assert move(f,id,'Validation').status_code==200
     period=get(a,id)['results'][0];result.update(record_version=get(a,id)['record_version'],period_version=period['record_version'],gross='9500')
     assert f.put(path,json=result).status_code==422
@@ -103,14 +101,12 @@ def test_audit_permissions_and_csrf(clients,db):
     response=a.post(P+'/session/logout',json={},headers={'Origin':'https://evil.invalid'});assert response.status_code==403
     users=a.get(P+'/references').json()['users'];assert all('password_hash' not in u for u in users)
 
-def test_hold_terminal_finance_matrix(clients):
-    a,m,f,c=(clients[r] for r in ('Admin','Manager','Finance','Contributor'))
+def test_hold_and_terminal_workflow(clients):
+    a=clients['Admin'];m=f=c=clients['User']
     id=make(c)['id']
     assert move(c,id,'Hold').status_code==200
     assert move(c,id,'Screening').status_code==422
     assert move(c,id,'Resume').status_code==200
-    assert move(f,id,'Screening').status_code==403
-    assert move(c,id,'Reject').status_code==403
     assert move(m,id,'Reject').status_code==200
     assert move(a,id,'Resume').status_code==422
     assert move(a,id,'Screening').status_code==422

@@ -4,7 +4,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 Money = Decimal
-Role = Literal['Contributor','Manager','Finance','Admin']
+Role = Literal['User','Admin']
 class Input(BaseModel):
     model_config = ConfigDict(extra='forbid', str_strip_whitespace=True)
 
@@ -25,12 +25,18 @@ class UserUpdate(Input):
     active: bool
     password: str | None = Field(default=None,min_length=12,max_length=256)
 
+class AccountCommand(Input):
+    record_version: int
+    reason: str = Field(min_length=1,max_length=20000)
+
 class IdeaFields(Input):
     title: str = Field(min_length=1,max_length=240)
     problem: str = Field(min_length=1,max_length=20000)
     solution: str = Field(min_length=1,max_length=20000)
-    site_id: str
-    category_id: str
+    site_id: str | None = None
+    category_id: str | None = None
+    site_name: str | None = Field(default=None,max_length=120)
+    category_name: str | None = Field(default=None,max_length=120)
     owner_id: str | None = None
     expected_start: date | None = None
     expected_finish: date | None = None
@@ -68,6 +74,13 @@ class IdeaUpdate(IdeaFields):
 class Command(Input):
     record_version: int
     reason: str = Field(min_length=1,max_length=20000)
+
+class IdeaRemovalCommand(Command):
+    confirm: Literal[True]
+
+class RestoreIdea(IdeaRemovalCommand):
+    owner_id: str | None = None
+    reassign_inactive_tasks: bool = False
 
 class Transition(Command):
     action: str
@@ -152,6 +165,18 @@ class Assignment(Input):
     owner_id: str
 
 class ReferenceInput(Input):
-    id: str = Field(min_length=1,max_length=80)
+    id: str | None = Field(default=None,min_length=1,max_length=80)
     label: str = Field(min_length=1,max_length=120)
     business_unit: str = Field(default='',max_length=120)
+
+class ReferenceUpdate(Input):
+    record_version: int
+    label: str = Field(min_length=1,max_length=120)
+    business_unit: str = Field(default='',max_length=120)
+    reason: str = Field(min_length=1,max_length=20000)
+
+class ReferenceMerge(Input):
+    record_version: int
+    target_id: str
+    target_version: int
+    reason: str = Field(min_length=1,max_length=20000)

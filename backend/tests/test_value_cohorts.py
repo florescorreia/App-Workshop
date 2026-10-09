@@ -16,7 +16,7 @@ def test_snapshot_immutability_matched_cohorts_and_draft_exclusion(db):
     for index in range(2):
         idea=domain.create_idea(db,admin,IdeaCreate(title='Cohort '+uuid.uuid4().hex,problem='Measured baseline',solution='Pilot',site_id='Tampa',category_id='Energy',expected_start=month,expected_finish=next_month))
         domain.transition(db,admin,idea,Transition(record_version=idea.record_version,action='Screening',reason='Review'))
-        fields={k:getattr(idea,k) for k in IdeaUpdate.model_fields if k!='record_version'};fields['screening_note']='Baseline accepted'
+        fields={k:getattr(idea,k) for k in IdeaUpdate.model_fields if k not in ('record_version','site_name','category_name')};fields['screening_note']='Baseline accepted'
         domain.update_idea(db,admin,idea,IdeaUpdate(**fields,record_version=idea.record_version))
         domain.transition(db,admin,idea,Transition(record_version=idea.record_version,action='Analysis',reason='Develop'))
         plan=domain.save_plan(db,admin,idea,PlanInput(record_version=idea.record_version,annual_gross=120000,annual_recurring=12000,upfront=10000,probability=D('.7'),confidence=D('.1'),periods=[Period(month=month,gross=1000,recurring=100,spend=1000),Period(month=next_month,gross=2000,recurring=200,spend=0)]))

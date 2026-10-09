@@ -26,12 +26,13 @@ def test_engine():
             c.execute(text('GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO ideaflow_app'))
             c.execute(text('GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO ideaflow_app'))
             c.execute(text('REVOKE UPDATE,DELETE,TRUNCATE ON idea_event FROM ideaflow_app'))
+            c.execute(text('REVOKE UPDATE,DELETE,TRUNCATE ON account_event FROM ideaflow_app'))
         engine=create_engine(app_url)
         with sessionmaker(engine).begin() as db:
-            for role in ('Admin','Manager','Finance','Contributor'):
+            for role in ('Admin','User'):
                 db.add(User(name='Test '+role,email=role.lower()+'@test.invalid',role=role,password_hash=hasher.hash('test-only-password-123')))
-            for label,unit in [('Tampa','Assembly'),('Atlanta','Distribution'),('Dallas','Assembly')]:db.add(Site(id=label,label=label,business_unit=unit))
-            for label in ['Procurement','Freight','Inventory','Energy','Scrap/Quality','Productivity','Working Capital']:db.add(Category(id=label,label=label))
+            for label,unit in [('Tampa','Assembly'),('Atlanta','Distribution'),('Dallas','Assembly')]:db.add(Site(id=label,label=label,label_key=label.casefold(),business_unit=unit))
+            for label in ['Procurement','Freight','Inventory','Energy','Scrap/Quality','Productivity','Working Capital']:db.add(Category(id=label,label=label,label_key=label.casefold()))
         yield engine
         engine.dispose();owner.dispose()
     finally:
@@ -53,7 +54,7 @@ def clients(test_engine):
             except Exception:db.rollback();raise
     app.dependency_overrides[get_db]=override
     result={}
-    for role in ('Admin','Manager','Finance','Contributor'):
+    for role in ('Admin','User'):
         c=TestClient(app)
         response=c.post('/api/v1/session/login',json={'email':role.lower()+'@test.invalid','password':'test-only-password-123'})
         assert response.status_code==200

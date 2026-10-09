@@ -14,7 +14,7 @@ def main():
         c.headers['X-CSRF-Token']=login.json()['csrf']
         if args.action=='create':
             title='Persistence verification '+uuid.uuid4().hex
-            r=c.post('/ideas',json={'title':title,'problem':'Check durable records across restart and rebuild.','solution':'Retain this isolated verification evidence.','site_id':'Tampa','category_id':'Productivity'})
+            r=c.post('/ideas',json={'title':title,'problem':'Check durable records across restart and rebuild.','solution':'Retain this isolated verification evidence.','site_name':'Persistence location','category_name':'Persistence category'})
             r.raise_for_status();idea=r.json();month=add_month(app_today().replace(day=1),-1).isoformat()
             r=c.put('/ideas/'+idea['id']+'/results/'+month,json={'record_version':idea['record_version'],'period_version':0,'gross':'1234.56','recurring':'34.56','spend':'100','reason':'Unique persisted result'});r.raise_for_status()
             detail=c.get('/ideas/'+idea['id']).json()

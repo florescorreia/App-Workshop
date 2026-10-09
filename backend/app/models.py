@@ -18,7 +18,18 @@ class User(Base):
     active: Mapped[bool] = mapped_column(default=True)
     record_version: Mapped[int] = mapped_column(default=1)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
-    __table_args__ = (CheckConstraint("role IN ('Contributor','Manager','Finance','Admin')"),)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    __table_args__ = (CheckConstraint("role IN ('User','Admin')", name='user_role'),)
+
+class AccountEvent(Base):
+    __tablename__ = 'account_event'
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    actor_id: Mapped[str] = mapped_column(ForeignKey('app_user.id'))
+    subject_id: Mapped[str] = mapped_column(String(36))
+    subject_name: Mapped[str] = mapped_column(String(120))
+    action: Mapped[str] = mapped_column(String(80))
+    occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    reason: Mapped[str] = mapped_column(Text, default='')
 
 class Session(Base):
     __tablename__ = 'app_session'
@@ -33,12 +44,18 @@ class Site(Base):
     label: Mapped[str] = mapped_column(String(120))
     business_unit: Mapped[str] = mapped_column(String(120))
     active: Mapped[bool] = mapped_column(default=True)
+    label_key: Mapped[str] = mapped_column(String(120), unique=True)
+    record_version: Mapped[int] = mapped_column(default=1)
+    merged_into: Mapped[str | None] = mapped_column(String(80))
 
 class Category(Base):
     __tablename__ = 'category'
     id: Mapped[str] = mapped_column(String(80), primary_key=True)
     label: Mapped[str] = mapped_column(String(120))
     active: Mapped[bool] = mapped_column(default=True)
+    label_key: Mapped[str] = mapped_column(String(120), unique=True)
+    record_version: Mapped[int] = mapped_column(default=1)
+    merged_into: Mapped[str | None] = mapped_column(String(80))
 
 class DemoBatch(Base):
     __tablename__ = 'demo_batch'
@@ -61,8 +78,8 @@ class Idea(Base):
     solution: Mapped[str] = mapped_column(Text)
     submitter_id: Mapped[str] = mapped_column(ForeignKey('app_user.id'))
     owner_id: Mapped[str] = mapped_column(ForeignKey('app_user.id'))
-    site_id: Mapped[str] = mapped_column(ForeignKey('site.id'))
-    category_id: Mapped[str] = mapped_column(ForeignKey('category.id'))
+    site_id: Mapped[str | None] = mapped_column(ForeignKey('site.id'))
+    category_id: Mapped[str | None] = mapped_column(ForeignKey('category.id'))
     stage: Mapped[str] = mapped_column(String(30), default='New')
     disposition: Mapped[str] = mapped_column(String(30), default='Active')
     progress: Mapped[int] = mapped_column(default=0)
@@ -79,7 +96,12 @@ class Idea(Base):
     stage_entered_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
     external_key: Mapped[str | None] = mapped_column(String(240), unique=True)
     demo_batch_id: Mapped[str | None] = mapped_column(ForeignKey('demo_batch.id'))
+    is_test: Mapped[bool] = mapped_column(Boolean, default=False, server_default='false')
+    removed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    removed_by: Mapped[str | None] = mapped_column(ForeignKey('app_user.id'))
+    removal_reason: Mapped[str | None] = mapped_column(Text)
     __table_args__ = (
+        CheckConstraint('(removed_at IS NULL AND removed_by IS NULL AND removal_reason IS NULL) OR (removed_at IS NOT NULL AND removed_by IS NOT NULL AND removal_reason IS NOT NULL AND length(trim(removal_reason)) > 0)',name='removal_metadata'),
         CheckConstraint('progress BETWEEN 0 AND 100'),
         CheckConstraint("stage IN ('New','Screening','Analysis','Approved','Implementation','Validation','Realized')"),
         CheckConstraint("disposition IN ('Active','On hold','Rejected','Cancelled')"),

@@ -23,3 +23,8 @@ export function dateText(value:any,time=false){
 }
 export function paybackText(value:any){return value?new Date(value+'T12:00:00').toLocaleDateString('en-US',{month:'long',year:'numeric'})+' month-end':'Unknown';}
 export function numberOrNull(value:any){return value===''||value==null?null:String(value);}
+export function lastCompletedMonth(){
+  const parts=new Intl.DateTimeFormat('en-US',{timeZone:appTimezone,year:'numeric',month:'2-digit'}).formatToParts(new Date());
+  const year=Number(parts.find(p=>p.type==='year')!.value),month=Number(parts.find(p=>p.type==='month')!.value);
+  return new Date(Date.UTC(year,month-2,1)).toISOString().slice(0,7);
+}

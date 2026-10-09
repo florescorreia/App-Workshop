@@ -13,22 +13,23 @@ EDGES = [('New','Screening'),('Screening','Analysis'),('Analysis','Approved'),('
 
 def fail(message,status=422): raise HTTPException(status,message)
 
-def lock_idea(db,idea_id,version=None):
+def lock_idea(db,idea_id,version=None,allow_removed=False):
+    from .classifications import lock
+    lock(db)
     idea = db.scalar(select(Idea).where(Idea.id == idea_id).with_for_update())
     if not idea: fail('Idea not found',404)
     if version is not None and idea.record_version != version: fail('This idea changed since you opened it. Refresh to see the latest version; your edits were not saved.',409)
+    if idea.removed_at and not allow_removed: fail('This idea is removed and read-only. An Admin must restore it before work can continue.',409)
     return idea
 
 def writable(user,idea,mode='edit'):
-    if user.role in ('Admin','Manager'): return
-    if mode == 'result' and user.role == 'Finance': return
-    if user.role == 'Contributor' and (idea.owner_id == user.id or (idea.submitter_id == user.id and idea.stage == 'New')): return
-    fail('You need ownership or Manager permission to change this idea',403)
+    require(user,'User','Admin')
+    if idea.removed_at: fail('Removed ideas are read-only; restore before editing',409)
 
 def references(db,site_id,category_id,owner_id):
-    if not db.get(Site,site_id) or not db.get(Category,category_id): fail('Choose an existing site and category')
+    if (site_id and not db.get(Site,site_id)) or (category_id and not db.get(Category,category_id)): fail('Choose an existing site and category')
     owner = db.get(User,owner_id)
-    if not owner or not owner.active: fail('Choose an active owner')
+    if not owner or not owner.active or owner.deleted_at: fail('Choose an active owner')
 
 def event(db,idea,user,event_type,activity=None,reason='',changes=None,from_stage=None,from_disposition=None,occurred_at=None,provenance=None):
     db.flush()
@@ -50,9 +51,11 @@ def changes_for(obj,data):
 
 def create_idea(db,user,data:IdeaCreate,occurred_at=None,provenance=None,external_key=None,batch_id=None):
     owner_id = data.owner_id or user.id
-    if owner_id != user.id: require(user,'Manager','Admin')
-    references(db,data.site_id,data.category_id,owner_id)
-    fields = data.model_dump(exclude={'annual_gross','annual_recurring','upfront','probability','confidence'})
+    fields = data.model_dump(exclude={'annual_gross','annual_recurring','upfront','probability','confidence','site_name','category_name'})
+    from .classifications import resolve
+    fields['site_id']=resolve(db,'sites',data.site_id,data.site_name,legacy=bool(provenance))
+    fields['category_id']=resolve(db,'categories',data.category_id,data.category_name,legacy=bool(provenance))
+    references(db,fields['site_id'],fields['category_id'],owner_id)
     fields['owner_id'] = owner_id
     timestamp = occurred_at or now()
     idea = Idea(**fields,submitter_id=user.id,reference=f'IF-{db.scalar(reference_seq.next_value()):05d}',created_at=timestamp,
@@ -67,9 +70,11 @@ def create_idea(db,user,data:IdeaCreate,occurred_at=None,provenance=None,externa
 
 def update_idea(db,user,idea,data,occurred_at=None,provenance=None):
     writable(user,idea)
-    fields = data.model_dump(exclude={'record_version'})
+    fields = data.model_dump(exclude={'record_version','site_name','category_name'})
+    from .classifications import resolve
+    fields['site_id']=resolve(db,'sites',data.site_id,data.site_name,legacy=bool(provenance))
+    fields['category_id']=resolve(db,'categories',data.category_id,data.category_name,legacy=bool(provenance))
     fields['owner_id'] = fields['owner_id'] or idea.owner_id
-    if fields['owner_id'] != idea.owner_id: require(user,'Manager','Admin')
     references(db,fields['site_id'],fields['category_id'],fields['owner_id'])
     for key in ('actual_start','actual_completion'):
         if fields[key] and fields[key] > (occurred_at.date() if occurred_at else app_today()): fail('Actual dates cannot be in the future')
@@ -106,7 +111,7 @@ def approval_missing(db,idea):
     return missing
 
 def approve_plan(db,user,idea,reason,occurred_at=None,provenance=None):
-    require(user,'Manager','Admin')
+    require(user,'User','Admin')
     if idea.disposition in ('Rejected','Cancelled'): fail('Terminal ideas cannot approve new plans')
     missing = approval_missing(db,idea)
     if missing: fail('; '.join(missing))
@@ -118,16 +123,12 @@ def approve_plan(db,user,idea,reason,occurred_at=None,provenance=None):
     return plan
 
 def allowed(db,user,idea):
-    manager = user.role in ('Manager','Admin')
-    finance = user.role in ('Finance','Admin')
-    owner = user.role=='Contributor' and idea.owner_id==user.id
+    if idea.removed_at: return []
+    permitted = user.role in ('User','Admin')
     result=[]
     for source,target in EDGES:
         if source != idea.stage: continue
-        role_ok = manager
-        if (source,target) in [('New','Screening'),('Screening','Analysis'),('Implementation','Validation')]: role_ok = manager or owner
-        if (source,target) in [('Validation','Realized'),('Realized','Validation')]: role_ok = finance
-        if (source,target)==('Validation','Implementation'): role_ok=manager or finance
+        role_ok = permitted
         missing=[]
         if not role_ok: missing.append('Your role cannot make this decision')
         if idea.disposition != 'Active': missing.append('Resume this idea first' if idea.disposition=='On hold' else 'This disposition is terminal')
@@ -142,14 +143,14 @@ def allowed(db,user,idea):
             if idea.progress != 100: missing.append('Progress must be 100%')
             if db.scalar(select(Task).where(Task.idea_id==idea.id,Task.required==True,Task.status!='Done')): missing.append('Complete all required tasks')
         if target=='Realized':
-            if not db.scalar(select(ValuePeriod).where(ValuePeriod.idea_id==idea.id,ValuePeriod.verified_at.is_not(None),ValuePeriod.month < app_today().replace(day=1))): missing.append('Finance must verify an elapsed month')
+            if not db.scalar(select(ValuePeriod).where(ValuePeriod.idea_id==idea.id,ValuePeriod.verified_at.is_not(None),ValuePeriod.month < app_today().replace(day=1))): missing.append('Review and verify an elapsed month')
             if not idea.actual_completion or idea.progress!=100: missing.append('Implementation must be complete')
         result.append({'action':target,'allowed':not missing,'missing':missing,'reason_required':True,'role_permitted':role_ok})
     if idea.stage != 'Realized' and idea.disposition not in ('Rejected','Cancelled'):
-        for action,ok in [('Resume' if idea.disposition=='On hold' else 'Hold',manager or owner),('Cancel',manager)]:
-            result.append({'action':action,'allowed':ok,'missing':[] if ok else ['Owner or Manager permission required'],'reason_required':True,'role_permitted':ok})
+        for action,ok in [('Resume' if idea.disposition=='On hold' else 'Hold',permitted),('Cancel',permitted)]:
+            result.append({'action':action,'allowed':ok,'missing':[] if ok else ['Sign in with an active account'],'reason_required':True,'role_permitted':ok})
         if idea.stage in ('New','Screening','Analysis'):
-            result.append({'action':'Reject','allowed':manager,'missing':[] if manager else ['Manager permission required'],'reason_required':True,'role_permitted':manager})
+            result.append({'action':'Reject','allowed':permitted,'missing':[] if permitted else ['An active account is required'],'reason_required':True,'role_permitted':permitted})
     return result
 
 def transition(db,user,idea,data:Transition,occurred_at=None,provenance=None):
@@ -181,7 +182,7 @@ def transition(db,user,idea,data:Transition,occurred_at=None,provenance=None):
             if not data.confirm_completion: fail('Confirm implementation completion')
             if not month or month.day!=1 or month>=app_today().replace(day=1): fail('Choose an elapsed verification-through month')
             period=db.get(ValuePeriod,(idea.id,month))
-            if not period or not period.verified_at: fail('Verification-through month must have finance-verified results')
+            if not period or not period.verified_at: fail('Verification-through month must have reviewed results')
             idea.verification_through=month
         idea.stage=data.action; idea.stage_entered_at=timestamp
     event(db,idea,user,kind,activity,reason=data.reason,from_stage=old_stage,from_disposition=old_disposition,
@@ -191,10 +192,9 @@ def transition(db,user,idea,data:Transition,occurred_at=None,provenance=None):
 def save_task(db,user,idea,data,task_id=None,occurred_at=None,provenance=None):
     task=db.get(Task,task_id) if task_id else None
     if task_id and (not task or task.idea_id!=idea.id): fail('Task not found',404)
-    if user.role=='Contributor' and task and task.assignee_id==user.id:
-        if any(getattr(task,k)!=getattr(data,k) for k in ('title','assignee_id','due_date','required')): fail('Assigned contributors may update task status only',403)
-    else: writable(user,idea)
-    if not db.get(User,data.assignee_id): fail('Choose an existing assignee')
+    writable(user,idea)
+    assignee=db.get(User,data.assignee_id)
+    if not assignee or not assignee.active or assignee.deleted_at: fail('Choose an active assignee')
     fields=data.model_dump(exclude={'record_version'})
     changes=changes_for(task,fields) if task else {k:{'old':None,'new':scalar_json(v)} for k,v in fields.items()}
     if not task:
@@ -233,7 +233,7 @@ def save_result(db,user,idea,month,data,occurred_at=None,provenance=None):
     return period
 
 def verify_result(db,user,idea,month,data,revoke=False,occurred_at=None,provenance=None):
-    require(user,'Finance','Admin');elapsed_month(month)
+    require(user,'User','Admin');elapsed_month(month)
     period=db.get(ValuePeriod,(idea.id,month))
     if not period: fail('Record actual results before verification')
     if period.record_version!=data.period_version: fail('This month changed. Refresh before verifying.',409)
