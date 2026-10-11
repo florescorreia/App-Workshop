@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "name": "App Workshop",
+  "apps": {
+    "ideaflow": {
+      "path": ".",
+      "kind": "existing",
+      "composeProject": "ideaflow",
+      "localPort": 8080,
+      "vps": {
+        "account": "ideaflow",
+        "publicPort": 8443,
+        "loopbackPort": 18081,
+        "target": "app-ideaflow.target",
+        "managedBy": "scripts/vps.ps1"
+      }
+    }
+  },
+  "vps": {
+    "host": "40.160.88.11",
+    "hostname": "vps-8104e6c8.vps.ovh.us",
+    "sshUser": "ubuntu",
+    "sshKeyFile": "vps-8104e6c8_ed25519",
+    "knownHostsFile": "vps-8104e6c8_known_hosts",
+    "credentialPrefix": "VPS-OVH-US-8104e6c8"
+  }
+}

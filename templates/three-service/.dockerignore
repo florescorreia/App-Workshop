@@ -1,0 +1,7 @@
+.git
+.env
+local
+backups
+artifacts
+node_modules
+__pycache__

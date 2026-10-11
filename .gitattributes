@@ -6,3 +6,4 @@ infra/vps/*.target text eol=lf
 infra/vps/*.service text eol=lf
 infra/vps/*.timer text eol=lf
 infra/vps/*.caddy text eol=lf
+templates/** text eol=lf

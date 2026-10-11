@@ -1,0 +1,4 @@
+{
+  "folders": [{"name": "App Workshop", "path": "."}],
+  "settings": {"files.exclude": {"**/__pycache__": true}}
+}

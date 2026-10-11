@@ -1,0 +1,54 @@
+name: {{APP_SLUG}}
+services:
+  postgres:
+    image: postgres:17.6-bookworm
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run init-env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+  backend:
+    image: {{APP_SLUG}}-backend:0.1.0
+    pull_policy: never
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      APP_TITLE: ${APP_TITLE}
+      APP_SLUG: ${APP_SLUG}
+      APP_ORIGIN: ${APP_ORIGIN}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, python, /app/healthcheck.py]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+  frontend:
+    image: {{APP_SLUG}}-frontend:0.1.0
+    pull_policy: never
+    build: ./frontend
+    ports:
+      - '127.0.0.1:${APP_PORT}:80'
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, wget, -q, --spider, http://127.0.0.1/api/health/ready]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+volumes:
+  pgdata:
+    name: {{APP_SLUG}}_pgdata
