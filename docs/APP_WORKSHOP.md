@@ -1,6 +1,6 @@
 # App Workshop
 
-Build independent applications in one Git repository and run them on the existing VPS. IdeaFlow is preserved at `apps/ideaflow/`. New apps live in `apps/<slug>/`; each has its own product contract, source, Compose project, database volume, credentials and deployment account. Shared tools and templates live at the root. The workspace directory is now `App-Workshop`; the original Git history and GitHub remote are preserved. 
+Build independent applications in one Git repository and run them on the existing VPS. IdeaFlow is preserved at `apps/ideaflow/`. New apps live in `apps/<slug>/`; each has its own product contract, source, Compose project, database volume, credentials and deployment account. Shared tools and templates live at the root. The workspace directory is now `App-Workshop`; the original Git history and GitHub remote are preserved.
 
 Open `App Workshop.code-workspace` in VS Code, or continue opening this directory normally. Use this new side-by-side workspace going forward. There is one root Git repository and no nested repositories.
 
