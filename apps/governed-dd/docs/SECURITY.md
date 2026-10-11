@@ -1,0 +1,13 @@
+# Trust and observed controls
+
+Host/platform administrators are trusted. Dedicated containers/networks/volumes isolate ordinary users and tenant agents within one host, not a compromised kernel/administrator.
+
+OIDC uses authorization code, PKCE, nonce/state, RS256 issuer/audience/expiry validation and server-side sessions. Membership is checked each gateway request and after long responses; exact Origin/CSRF protects Explorer writes. Component origins use host-only cookies and single-use membership tickets. Paperclip native auth remains required; arbitrary identity headers never grant access. HTTP paths/static/API/attachments are gated. Real active websocket membership revocation passed. Native sign-up is disabled outside detached private provisioning.
+
+Tenant agent keys cannot change scope or grant human acceptance. Separate reviewer credential/context records exact reviewed revisions. Publication validates source locators/bytes, run outputs/environment, independent checks and graph state, rejecting nested failed checks. Serving DD role cannot update/delete canonical versions or audit history after administrator hardening. Owner permissions remain deliberately trusted for Lab writes; no community read-only graph claim.
+
+Generated analysis runs as UID1000 in dedicated SSH runtime with scoped model/MCP key and no DB/gateway/admin/engine credentials. Paperclip SSH adapter inherited environment is allowlisted; host Codex auth is never mounted. Reviewer filesystem/state is separate. Provider CONNECT proxy allowlists exact host443; general internet direct routing is denied. Runtime concurrency uses shared flock and bounded timeout. Scheduling is disabled; only explicit consultant tasks start work. Cost capture on custom providers may report zero and is not an authoritative bill.
+
+Controlled fetch rejects unsafe scheme/credentials/ports, private/mixed DNS, unsafe redirects and oversized bytes; direct IP connection retains TLS hostname verification. Authorized public workstation CA may be configured; no verification bypass. Untrusted documents/pages cannot change token scope or publication authorization. Artifact previews display HTML as text. Native component UIs require separate inline script/style CSP support; Explorer keeps strict policy.
+
+Private configuration/secrets/backups remain app-local and ignored. Offline backups encrypt archives and manifest; retain an independent recovery key. Source scans compare actual configured secrets without printing matches. Exhaustive historical native transcript/browser secret checking remains outstanding, documented honestly. Local localhost origins need production secure-cookie/DNS/TLS review; prepared Quadlets have not been deployed.

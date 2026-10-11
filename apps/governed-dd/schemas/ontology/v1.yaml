@@ -1,0 +1,13 @@
+version: 1
+types: [Company, Person, Market, Product, Geography, Metric, Definition, Source, Evidence, Finding, Assumption, AnalysisRun, Artifact, Task]
+relations:
+  SUPPORTS: {from: [Evidence, Source], to: [Finding], evidence: true}
+  REFUTES: {from: [Evidence, Source], to: [Finding], evidence: true}
+  DERIVED_FROM: {from: [Artifact, Finding, Metric, Evidence], to: [Source, Evidence, AnalysisRun], evidence: true}
+  GENERATED_BY: {from: [Artifact, Finding, Evidence], to: [AnalysisRun], evidence: false}
+  USES: {from: [AnalysisRun], to: [Source, Definition, Metric], evidence: false}
+  DEFINES: {from: [Definition], to: [Metric], evidence: false}
+  ABOUT: {from: [Finding, Evidence, Source], to: [Company, Person, Market, Product, Geography, Metric], evidence: true}
+  OWNS: {from: [Company, Person], to: [Company, Product], evidence: true}
+  COMPETES_WITH: {from: [Company, Product], to: [Company, Product], evidence: true}
+  OPERATES_IN: {from: [Company, Product], to: [Market, Geography], evidence: true}

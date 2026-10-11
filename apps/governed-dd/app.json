@@ -1,0 +1,114 @@
+{
+    "schemaVersion":  1,
+    "slug":  "governed-dd",
+    "management":  {
+                       "kind":  "custom",
+                       "script":  "scripts/governed-dd.ps1"
+                   },
+    "composeProject":  "governed-dd-control",
+    "localPort":  8081,
+    "entrypoints":  {
+                        "portal":  "http://localhost:8081",
+                        "identity":  "http://localhost:8081/identity",
+                        "explorer":  "/t/\u003copaque-id\u003e/",
+                        "paperclip":  "http://paperclip-\u003copaque-id\u003e.localhost:8081 (enter through portal membership ticket)"
+                    },
+    "topology":  {
+                     "control":  [
+                                     "gateway",
+                                     "portal",
+                                     "keycloak",
+                                     "control-postgres"
+                                 ],
+                     "tenant":  [
+                                    "postgres",
+                                    "governance",
+                                    "graph",
+                                    "explorer",
+                                    "paperclip"
+                                ],
+                     "optional":  [
+                                      "lab"
+                                  ],
+                     "agentExecution":  "Supported per-tenant SSH runtime with Codex CLI engine and inherited-environment allowlist; real smoke passed. Full acceptance in progress.",
+                     "execution":  [
+                                       "runtime",
+                                       "runtime-reviewer",
+                                       "egress"
+                                   ],
+                     "serviceCounts":  {
+                                           "control":  4,
+                                           "tenantBase":  5,
+                                           "tenantWithExecution":  8,
+                                           "tenantWithExecutionAndLab":  9
+                                       }
+                 },
+    "volumes":  {
+                    "control":  [
+                                    "governed-dd-control-db",
+                                    "governed-dd-frontend",
+                                    "governed-dd-identity-private"
+                                ],
+                    "tenant":  [
+                                   "postgres",
+                                   "graph",
+                                   "artifacts",
+                                   "paperclip",
+                                   "git",
+                                   "agent-home",
+                                   "lab",
+                                   "reviewer-git",
+                                   "reviewer-home",
+                                   "run-gate",
+                                   "ontology"
+                               ]
+                },
+    "ports":  {
+                  "published":  [
+                                    8081
+                                ],
+                  "binding":  "127.0.0.1",
+                  "internalOnly":  [
+                                       5432,
+                                       7687,
+                                       8000,
+                                       3100
+                                   ]
+              },
+    "commands":  [
+                     "doctor",
+                     "build",
+                     "setup",
+                     "up",
+                     "down",
+                     "status",
+                     "logs",
+                     "tenant-create",
+                     "tenant-start",
+                     "tenant-stop",
+                     "user-create",
+                     "member-add",
+                     "member-remove",
+                     "test",
+                     "rebuild-graph",
+                     "reindex",
+                     "demo-seed",
+                     "runtime-enable",
+                     "native-bootstrap",
+                     "native-user",
+                     "database-harden",
+                     "backup",
+                     "restore-test",
+                     "config-check",
+                     "agent-setup",
+                     "agent-check",
+                     "provider-configure"
+                 ],
+    "vps":  {
+                "account":  "governed-dd",
+                "publicPort":  8444,
+                "loopbackPort":  18082,
+                "target":  "app-governed-dd-control.target",
+                "managedBy":  "app-specific reviewed Quadlets; generic deployer prohibited"
+            }
+}

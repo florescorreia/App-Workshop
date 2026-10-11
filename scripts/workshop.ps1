@@ -35,6 +35,15 @@ if($Action -eq 'list'){
  return
 }
 $taskContext=Find-WorkshopContext
+if($App -and $taskCatalog.apps.PSObject.Properties[$App] -and $taskCatalog.apps.PSObject.Properties[$App].Value.kind -eq 'custom'){
+ $taskCustom=$taskCatalog.apps.PSObject.Properties[$App].Value
+ $taskCustomScript=[IO.Path]::GetFullPath((Join-Path $taskRoot $taskCustom.managedBy))
+ $taskExpectedRoot=[IO.Path]::GetFullPath((Join-Path $taskRoot $taskCustom.path))+[IO.Path]::DirectorySeparatorChar
+ if(-not $taskCustomScript.StartsWith($taskExpectedRoot,[StringComparison]::OrdinalIgnoreCase)){throw 'Custom manager must remain in its app folder.'}
+ & powershell -NoProfile -ExecutionPolicy Bypass -File $taskCustomScript $Action -Context $taskContext
+ if($LASTEXITCODE -ne 0){throw "Custom app operation failed: $Action"}
+ return
+}
 if($Action -in @('new','prepare-vps','verify')){
  & docker --context $taskContext image inspect ideaflow-vps-tools:1.0.0 --format '{{.Id}}' 2>$null | Out-Null
  if($LASTEXITCODE -ne 0){

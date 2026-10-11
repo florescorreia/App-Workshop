@@ -1,0 +1,9 @@
+scenario,year,segment,revenue_usd_m,gross_margin_pct
+fictional-harborlight-v1,2024,Residential repair,3.0,40
+fictional-harborlight-v1,2024,Commercial repair,2.0,35
+fictional-harborlight-v1,2024,Equipment installation,3.0,45
+fictional-harborlight-v1,2024,Maintenance contracts,2.0,30
+fictional-harborlight-v1,2025,Residential repair,3.6,40
+fictional-harborlight-v1,2025,Commercial repair,2.4,35
+fictional-harborlight-v1,2025,Equipment installation,3.0,45
+fictional-harborlight-v1,2025,Maintenance contracts,3.0,30

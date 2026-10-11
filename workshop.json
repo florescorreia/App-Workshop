@@ -2,6 +2,20 @@
   "schemaVersion": 1,
   "name": "App Workshop",
   "apps": {
+    "governed-dd": {
+      "path": "apps/governed-dd",
+      "kind": "custom",
+      "managedBy": "apps/governed-dd/scripts/governed-dd.ps1",
+      "composeProject": "governed-dd-control",
+      "localPort": 8081,
+      "vps": {
+        "account": "governed-dd",
+        "publicPort": 8444,
+        "loopbackPort": 18082,
+        "target": "app-governed-dd-control.target",
+        "managedBy": "apps/governed-dd/infra/vps"
+      }
+    },
     "ideaflow": {
       "path": "apps/ideaflow",
       "kind": "existing",

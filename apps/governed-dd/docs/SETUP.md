@@ -1,0 +1,36 @@
+# Local setup and configuration
+
+Run from the repository root with Rancher Desktop in Moby mode. The PowerShell manager discovers and verifies the context; this workstation uses `default`. All Python, Node, Codex, builds and tests execute in containers. No generic generator or deployer is used.
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File apps/governed-dd/scripts/governed-dd.ps1 doctor -Context default
+powershell -NoProfile -ExecutionPolicy Bypass -File apps/governed-dd/scripts/governed-dd.ps1 build -Context default
+powershell -NoProfile -ExecutionPolicy Bypass -File apps/governed-dd/scripts/governed-dd.ps1 setup -Context default
+powershell -NoProfile -ExecutionPolicy Bypass -File apps/governed-dd/scripts/governed-dd.ps1 up -Context default
+```
+
+Setup generates private credentials and control manifests, preserving existing secrets. Normal startup has no engagements or fictional data. Portal is http://localhost:8081. Provision with `tenant-create -Name <name>`, retain its opaque ID, then `tenant-start -Tenant <id>`. Create consultant identity with `user-create -Name <login>` and assign the returned OIDC subject with `member-add -Tenant <id> -Subject <subject> -Role owner|analyst|reviewer|viewer`. `member-remove` revokes access. Passwords remain in the private identity volume; distribute them privately.
+
+Run `native-bootstrap`, then `native-user -Name <login> -Role <role>` for the tenant. Provisioning temporarily detaches Paperclip ingress and restores protected native authentication afterward. Native credentials remain in the tenant Paperclip volume, `native-<login>.json`. Portal and native login are both required. Run `database-harden` after initial schema installation: serving roles then skip DDL and cannot update/delete canonical records or audit. Future migrations require explicit administrator tooling.
+
+Configure nonsecret provider settings in app `.env`. The selected analytical provider is LiteLLM Responses, `gpt-6.1-sol`, medium reasoning, named `LITELLM_API_KEY`. Inject only the named Process/User variable with `runtime-enable -Tenant <id>`. New execution networks require reviewed `DD_RUNTIME_SUBNET` and `DD_PROVIDER_EDGE_SUBNET`; avoid provider routes, including 172.24.173.140. Do not copy host Codex authentication/history. `agent-setup` configures analyst and independent reviewer without tasks; `agent-check` starts an explicit real smoke task.
+
+Default external search is WEB_SEARCH_PROVIDER=bing_rss, discovered in the sibling Vulcan project and live-tested; it needs no API key. Brave remains available with WEB_SEARCH_PROVIDER=brave and its named key. Verified embedding settings are LiteLLM, the same /v1 endpoint, text-embedding-3-large,3072dimensions and EMBEDDING_API_KEY_ENV=LITELLM_API_KEY. Run `provider-configure -Tenant <id>` and recreate governance when no work is active. This writes scoped private secrets, never key values to source. The selected model endpoint does not establish search or embedding support. Set public research authorization per engagement only after project authorization. Provider/endpoint/model/dimension/extraction changes require `reindex`; incompatible vectors are excluded. `rebuild-graph` replays canonical records.
+
+Control has four services; base tenant five; analyst/reviewer/egress add three; Lab adds one. Start admission sums running and proposed configured memory limits plus 2 GiB headroom under an administration lock. This engine has 15.33 GiB. Fully enabling both tenants was refused. Use `tenant-stop` for inactive workspaces; it preserves memberships and all volumes. Do not prune or use volume deletion. User-authorized Rancher vm.max_map_count=262144 is required for Memgraph and is not persistent across VM restart. Host settings are never changed automatically.
+
+Explicit `demo-seed` loads additive, validated, idempotent fictional fixtures. They are synthetic and do not satisfy real agent/provider acceptance by themselves. Tasks have no periodic heartbeats; cancellation through Paperclip cleans remote execution descendants. SSH runtimes and the shared execution gate enforce one analytical/reviewer process at a time. Timeouts bound execution; custom-provider monetary cost remains an upstream configuration prerequisite.
+
+After a real analysis completes, run `scripts/attest-run.ps1 -Tenant <id> -Analysis <uuid> -Version <n> -Context default`. It verifies native successful task/run linkage and Git commit existence, then persists a bounded provenance attestation required before acceptance. It does not prove historical image execution; the reviewer must still inspect inputs, calculation and output limitations.
+
+Explicit native source import: `powershell -NoProfile -ExecutionPolicy Bypass -File apps/governed-dd/scripts/import-attachment.ps1 -Tenant <id> -Task <uuid> -Attachment <uuid> -Context default`. The supported Paperclip APIs verify attachment membership, size and SHA256 before canonical registration/ingestion. It uses tenant native administrator credentials only in transient administrator operations; serving agents do not receive them. Portable CLI equivalent: `import-attachment --tenant <id> --task <uuid> --attachment <uuid>`. No automatic attachment indexing occurs. Temporary bytes are removed after import; canonical bytes remain in the artifact volume.
+
+Unix users run `sh apps/governed-dd/scripts/governed-dd.sh <action> --tenant <id> --name <name> --subject <subject> --role <role>`. The wrapper verifies the context, builds the transient administrator image and checks that its socket reaches the same engine. Supported portable actions include setup, up, tenant-create/start/stop, user/membership/native management, runtime/provider configuration, agent setup/check, tests, graph/index rebuild and encrypted backup/volume restore. The socket is mounted only to this administrator tool, never serving containers. `doctor` and `test` were executed on the portable CLI; a Unix host was not available for full wrapper testing. Supply named provider variables explicitly; custom key names can be injected by `docker -e <name>` when invoking the tooling image.
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File apps/governed-dd/scripts/backup.ps1 backup -Context default
+powershell -NoProfile -ExecutionPolicy Bypass -File apps/governed-dd/scripts/backup.ps1 restore-test -Context default -Backup <absolute-folder>
+powershell -NoProfile -ExecutionPolicy Bypass -File apps/governed-dd/scripts/restore-stack.ps1 -Prefix <printed-prefix> -Context default -SubnetPrefix <checked-10.x-range>
+```
+
+Backup quiesces only live app writers and encrypts databases, identity, files, workspaces/homes, ontology and private configuration. Keep its key independently. Restore always uses fresh volumes and networks, has no published ports/provider egress, and retains the copy after tests. Never run two database containers against one volume. Use the complete restored-stack test with explicit control and tenant ingress network connections; stop the test Compose afterward. Named volumes alone are not backups. Future VPS preparation and target prerequisites are in VPS_MIGRATION.md; no VPS deployment is authorized here.
