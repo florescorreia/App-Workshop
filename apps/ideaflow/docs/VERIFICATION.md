@@ -1,3 +1,5 @@
+> Document status: dated reference evidence. Counts, imported links, runtime state and old role names describe the recorded run; they are not a current workspace inventory. Current User/Admin behavior and command locations are in [README.md](README.md). Local scripts run from `apps/ideaflow/` after deliberate staging. No fictional import is part of startup, documentation review or deployment.
+
 # Verified local delivery — IdeaFlow 1.0.0
 
 **Current handover, 2026-10-09:** the user explicitly authorized clearing the local workspace and simplifying it. The live app is now empty with only the preserved bootstrap Admin, no locations/categories, and Alembic revision **0002**. Earlier populated showcase references and role requirements below are historical evidence. Current manual guide: [UX_WALKTHROUGH.md](UX_WALKTHROUGH.md).

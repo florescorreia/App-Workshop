@@ -6,7 +6,7 @@ The committed small fixture is `demo/example.json`. It illustrates a new distinc
 
 The separately authored and imported **12-record v2** fixture is `demo/harborworks-demo-v2.json` (batch key harborworks-demo-v2, seed 84). Its actual references, preservation evidence and live walkthrough are in [DEMO_V2_GUIDE.md](DEMO_V2_GUIDE.md). Repeat it with `seed-demo -File demo/harborworks-demo-v2.json`, retaining the JSON input; the batch key makes it a no-op.
 
-The 2026-10-09 authorized cleanup removed live v1/v2 batches. Their JSON files remain importable, but importing them again now adds a new batch to the empty workspace. Their old references and generated credentials describe the archived backup, not the current live app. Startup does not load them.
+The 2026-10-09 authorized cleanup removed live v1/v2 batches. Their JSON files remain importable, but importing them again now adds a new batch to the current workspace, preserving existing records. Their old references and generated credentials describe the archived backup, not the current live app. Startup does not load them.
 
 Top-level JSON:
 
@@ -17,7 +17,7 @@ Top-level JSON:
   "batch_key": "a-unique-explicit-key",
   "seed": 42,
   "anchor_date": "2026-10-07",
-  "people": [{"key":"owner","name":"Fictional Person","email":"person@example.invalid","role":"Contributor"}],
+  "people": [{"key":"owner","name":"Fictional Person","email":"person@example.invalid","role":"User"}],
   "ideas": []
 }
 ```
@@ -41,7 +41,7 @@ Each action contains `occurred_at`, `actor_key`, `kind` and `data`. Equal timest
 
 Do not provide `record_version` or `period_version`: replay derives them. Ordinary API endpoints cannot set historical timestamps/actors or import provenance. All imported events visibly retain fictional label, batch key, seed and anchor; recorded_at is the actual import time.
 
-PowerShell JSON batch command:
+Run the following app-relative commands from `apps/ideaflow/` after deliberate local startup. Import remains Admin-only. PowerShell JSON batch command:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/ideaflow.ps1 seed-demo -File demo/my-second-batch.json -DryRun

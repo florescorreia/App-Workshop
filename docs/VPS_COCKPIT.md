@@ -4,6 +4,10 @@ Subsequent deployment: **IdeaFlow application** is available in Application stac
 
 Installed Cockpit 360, cockpit-podman 124 and cockpit-storaged 360 on the VPS. Cockpit provides machine/resource monitoring, logs, services, storage and Podman container controls. The custom **Application stacks** page starts/stops complete application targets belonging to the signed-in Linux account.
 
+## Folder and account scope
+
+Shared Cockpit source is under root `infra/cockpit/`. App-specific deployment/check scripts belong under the app folder; IdeaFlow's tool is `apps/ideaflow/scripts/vps.ps1` from the repository root. Future app accounts see their own targets/containers, with separate Windows User credential variables from `scripts/workshop-vps.ps1 init-secrets -App <name>`. The custom page does not provide a single cross-account container list. Current shared architecture is in [VPS_FOUNDATION.md](VPS_FOUNDATION.md).
+
 ## Connect
 
 Keep this command running in PowerShell:

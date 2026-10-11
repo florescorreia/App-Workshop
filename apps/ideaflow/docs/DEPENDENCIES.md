@@ -1,6 +1,6 @@
 # Third-party dependency inventory
 
-VPS operations additionally use a transient Python SSH tool container with Paramiko 4.0.0 (LGPL-2.1), cryptography 50.0.2 (Apache-2.0/BSD), bcrypt 5.0.0 (Apache-2.0), PyNaCl 1.6.2 (Apache-2.0), CFFI 2.1.1 (MIT), pycparser 3.11 (BSD) and Invoke 3.0.3 (BSD). Versions are locked in `infra/vps-tools/requirements.lock`; this container is not a long-running application service. The VPS's existing Podman/Caddy/Cockpit packages remain as documented in the foundation handovers.
+VPS operations additionally use a transient Python SSH tool container with Paramiko 4.0.0 (LGPL-2.1), cryptography 50.0.2 (Apache-2.0/BSD), bcrypt 5.0.0 (Apache-2.0), PyNaCl 1.6.2 (Apache-2.0), CFFI 2.1.1 (MIT), pycparser 3.11 (BSD) and Invoke 3.0.3 (BSD). Versions are locked in root `infra/vps-tools/requirements.lock` (from this app folder: `../../infra/vps-tools/requirements.lock`); this container is not a long-running application service. The VPS's existing Podman/Caddy/Cockpit packages remain as documented in the foundation handovers.
 
 Dependencies are pinned in `frontend/package-lock.json` and `backend/requirements.lock`; the backend lock includes transitive packages observed in the container. Full package/version/license metadata is committed in `frontend-dependencies.json` and `backend-dependencies.json`. These are inventories, not legal advice. Upstream LICENSE texts remain in installed packages/images.
 
@@ -31,4 +31,4 @@ Dependencies are pinned in `frontend/package-lock.json` and `backend/requirement
 
 Frontend npm audit reported zero known vulnerabilities after patched router/Vite/Playwright versions were locked. This is the npm advisory result at verification time, not a guarantee that every base image or package is free from vulnerabilities. The newer Playwright 1.64 image was unavailable at the registry, so the verified compatible test package/image is 1.55.1.
 
-To regenerate inventories with containers, execute `python -m app.inventory` in the backend and `node frontend/scripts/inventory.cjs` with the frontend working directory in a Node container. Source and generated inventory contain no secrets.
+To regenerate inventories with containers, execute `python -m app.inventory` in the backend and `node scripts/inventory.cjs` with the frontend working directory in a Node container. Source and generated inventory contain no secrets.

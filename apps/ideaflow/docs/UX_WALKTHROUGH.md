@@ -1,3 +1,5 @@
+> Location: run this walkthrough in the app you actually opened. Production is https://vps-8104e6c8.vps.ovh.us:8443; localhost:8080 requires deliberate local startup. Actions create/change ordinary records and contribute to totals. Current roles are User/Admin.
+
 # Your first IdeaFlow process · User walkthrough
 
 Work through this exercise while signed in with the **User account you already created**. You can capture ideas, define classifications, assign work, move through the workflow, approve plans and review results with that account. The optional Admin exercises are at the end; switch accounts only for those steps.

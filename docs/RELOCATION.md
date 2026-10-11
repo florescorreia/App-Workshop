@@ -1,5 +1,7 @@
 # Workspace relocation - 2026-10-11
 
+Historical move evidence. The GitHub repository has since changed to **https://github.com/florescorreia/App-Workshop**. Earlier statements below about the original remote/history reflect the relocation date; current setup is in [APP_WORKSHOP.md](APP_WORKSHOP.md).
+
 Destination: `C:/Users/M840363/OneDrive - Roland Berger Holding GmbH/Desktop/VSCode Projects/App-Workshop`.
 
 Copied the entire prior workspace and its root Git metadata into the initially empty destination, including private .env/local data, historical backups and artifacts. Preserved remote `https://github.com/florescorreia/MINDcan-inspired-architecture.git` and existing commit history. Original directory remains untouched so the user can delete it after opening/reviewing this workspace. Do not keep developing/pushing both copies independently.

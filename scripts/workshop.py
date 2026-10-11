@@ -59,7 +59,16 @@ def new_app(slug,root=ROOT,port=None):
     valid_slug(slug);data=catalog(root)
     if slug in data['apps']:raise ValueError('App already registered; refusing overwrite')
     target=root/'apps'/slug
-    if target.exists():raise ValueError('App folder already exists; refusing overwrite')
+    existing_prd=None
+    if target.exists():
+        # A user may land the product brief before requesting implementation.
+        # Accept only docs/PRD.md, never merge into an existing source tree.
+        if target.is_symlink() or not target.resolve().is_relative_to((root/'apps').resolve()):raise ValueError('App path escapes apps/')
+        existing=[p.relative_to(target).as_posix() for p in target.rglob('*')]
+        if set(existing)!={'docs','docs/PRD.md'} or not (target/'docs/PRD.md').is_file() or target.is_symlink() or (target/'docs').is_symlink() or (target/'docs/PRD.md').is_symlink():
+            raise ValueError('App folder already contains files other than docs/PRD.md; refusing overwrite')
+        existing_prd=(target/'docs/PRD.md').read_bytes()
+        if not existing_prd.strip():raise ValueError('Existing PRD.md is empty; write the product brief first')
     local=port if port is not None else next_port({v['localPort'] for v in data['apps'].values()},8081)
     used={v['vps'][k] for v in data['apps'].values() for k in ('publicPort','loopbackPort')}
     public=next_port(used,8444);private=next_port(used|{public},18082)
@@ -70,10 +79,11 @@ def new_app(slug,root=ROOT,port=None):
     values['DB_NAME']=slug.replace('-','_');values['DB_USER']=slug.replace('-','_')+'_owner'
     template=root/'templates'/'three-service'
     # Render into a new directory only. There are no credentials/data/.git in it.
-    target.mkdir(parents=True)
+    target.mkdir(parents=True,exist_ok=existing_prd is not None)
     for source in sorted(template.rglob('*')):
         if not source.is_file() or any(part in ('__pycache__','node_modules','dist','local','backups') for part in source.relative_to(template).parts):continue
         dest=target/source.relative_to(template);dest.parent.mkdir(parents=True,exist_ok=True)
+        if existing_prd is not None and source.relative_to(template).as_posix()=='docs/PRD.md':continue
         content=source.read_text()
         for key,value in values.items():content=content.replace('{{'+key+'}}',value)
         dest.write_text(content)

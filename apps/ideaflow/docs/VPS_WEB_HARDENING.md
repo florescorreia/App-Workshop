@@ -1,3 +1,5 @@
+> Document status: dated reference evidence. Counts, imported links, runtime state and old role names describe the recorded run; they are not a current workspace inventory. Current User/Admin behavior and command locations are in [README.md](README.md). Local scripts run from `apps/ideaflow/` after deliberate staging. For current hosting, see [VPS_IDEAFLOW.md](VPS_IDEAFLOW.md); the later web-hardening record supersedes the old closed-443 inventory.
+
 # External assessment remediation — 2026-10-09
 
 Applied the assessment improvements at Caddy and updated `infra/vps/ideaflow.caddy` so future publication retains them. Application containers, business data and credentials were not changed.

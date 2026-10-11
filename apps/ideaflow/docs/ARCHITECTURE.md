@@ -12,7 +12,7 @@ flowchart LR
   postgres --- volume[ideaflow_pgdata]
 ```
 
-Only frontend publishes a loopback port. Compose project and durable volume names are stable. Three production services run with healthchecks and restart policies. Transient build, test and restore tooling does not change the deployed stack. React fonts, Plotly assets and graph libraries are bundled locally. No runtime internet API, CORS service or external worker is needed.
+Only frontend publishes a loopback port. Compose project and durable volume names are stable. Three services run when locally staged; production uses the same application components under rootless Podman/Quadlet and host Caddy. Local containers are stopped outside tests. Transient build, test and restore tooling does not change the deployed stack. React fonts, Plotly assets and graph libraries are bundled locally. No runtime internet API, CORS service or external worker is needed.
 
 Backend initialization runs Alembic under the migration database role, creates the restricted application login if missing, grants table privileges with audit update/delete/truncate revoked, and creates the bootstrap Admin only. Subsequent startups preserve existing credentials and records. API runtime uses `ideaflow_app`; migration secrets never enter frontend assets. Database triggers reject audit mutation and financial snapshot content/schedule mutation. PostgreSQL owns relational constraints and Numeric money storage.
 
@@ -25,6 +25,8 @@ Financial definitions are implemented in `app/financial.py`. Dashboard services 
 Process discovery sorts full selected-case lifecycle histories by `(occurred_at, sequence, event_id)` through as-of, excluding edits/comments. Creation-date filters select cases rather than clipping their traces. Visits close on a stage move or terminal disposition; hold/resume splits hold time within the same visit. Open visits remain right-censored. Directly-follows edges count traversals and distinct cases; variants and backward moves are derived from observed traces. React Flow uses Dagre layout and the same edge data as the supporting table.
 
 Source modules: `models.py` schema, `schemas.py` typed commands, `auth.py` sessions, `domain.py` workflow/events, `financial.py` formulas, `queries.py` portfolio/value cohorts, `process.py` discovery, `demo.py` replay importer, `main.py` versioned API. Browser navigation has a URL-driven register, pipeline/process filters and workspace tabs. Browser state is transient; reloads fetch the system of record.
+
+See [VPS operation](VPS_IDEAFLOW.md) for the separate rootless account, production volume, TLS and secure-cookie origin. Local and production databases are independent.
 
 Official references consulted during build: Rancher Desktop Container Engine settings, Docker Compose, FastAPI, Alembic, PostgreSQL 17 pg_dump/pg_restore, Plotly JavaScript and React Flow layout documentation. See verification for actual HTTP checks and deployment context.
 

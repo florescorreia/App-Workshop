@@ -1,10 +1,12 @@
 # App Workshop
 
-Build independent applications in one Git repository and run them on the existing VPS. IdeaFlow is preserved at `apps/ideaflow/`. New apps live in `apps/<slug>/`; each has its own product contract, source, Compose project, database volume, credentials and deployment account. Shared tools and templates live at the root. The workspace directory is now `App-Workshop`; the original Git history and GitHub remote are preserved.
+Build independent applications in one Git repository and run them on the existing VPS. IdeaFlow is preserved at `apps/ideaflow/`. New apps live in `apps/<slug>/`; each has its own product contract, source, Compose project, database volume, credentials and deployment account. Shared tools and templates live at the root. The workspace directory and GitHub repository are `App-Workshop`. Start with [the PRD-first guide](START_NEW_APP.md).
 
-Open `App Workshop.code-workspace` in VS Code, or continue opening this directory normally. Use this new side-by-side workspace going forward. There is one root Git repository and no nested repositories.
+Open `App Workshop.code-workspace` in VS Code, or continue opening this directory normally. Use this workspace going forward. There is one root Git repository and no nested repositories.
 
 ## Create your next app locally
+
+First land or complete the product brief at **`apps/<name>/docs/PRD.md`**; [START_NEW_APP.md](START_NEW_APP.md) provides the detailed sequence and implementation prompt. `new` accepts either a new folder or one containing only that nonempty PRD and preserves the brief. It refuses registered names or folders containing other files. The commands below show generation followed by optional local starter review; product implementation follows the PRD.
 
 Run these commands from the repository root in PowerShell. Choose a permanent lowercase name, for example `supplier-portal`:
 
@@ -41,6 +43,8 @@ Existing IdeaFlow operations continue using `apps/ideaflow/scripts/ideaflow.ps1`
 
 ## Deploy a completed app to the VPS
 
+Status: the generic release/installer validation passed, but a second real app has not been deployed with it. Treat these as the supported preparation steps and intended deployment behavior; verify the finished app on the target before claiming success. See [workspace evidence](VERIFICATION.md).
+
 Finish the app's own business tests, security review, account management, least-privilege database roles, schema migration strategy, browser/layout checks and backup/restore verification first. The generated notes starter uses an owner database role and has no failed-login throttling or user administration UI; it is a development starting point. Do not mistake its infrastructure readiness for completed product/security acceptance.
 
 The existing host uses rootless Podman/Quadlet and host Caddy. Local development continues using Docker Compose; do not replace the VPS runtime or move IdeaFlow to Docker. See [foundation](VPS_FOUNDATION.md), [security](VPS_SECURITY.md), [Cockpit](VPS_COCKPIT.md) and [IdeaFlow operation](../apps/ideaflow/docs/VPS_IDEAFLOW.md).
@@ -62,7 +66,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/workshop-vps.ps1 sta
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/workshop-vps.ps1 backup -App supplier-portal
 ```
 
-Deployment transfers and verifies SHA-256 checksums, creates a dedicated account with unique subordinate IDs and lingering, installs only its units and protected env files, loads/pins images, starts its three healthy services, installs its daily backup timer, validates/reloads the shared Caddy configuration and opens only its HTTPS port. The frontend stays loopback-only. A scoped user-manager shutdown drop-in follows IdeaFlow's verified reboot solution. An existing Linux account without the workshop ownership marker is rejected. Updates preserve server credentials and volume and take a pre-update dump when the database is running. Updates interrupt only that app. There is no automated migration or rollback of an arbitrary future product; keep release copies and app-specific recovery instructions.
+The installer is designed to transfer and verify SHA-256 checksums, create a dedicated account with unique subordinate IDs and lingering, install only its units and protected env files, load/pin images, start its three healthy services, install its daily backup timer, validate/reload the shared Caddy configuration and open only its HTTPS port. The frontend stays loopback-only. A scoped user-manager shutdown drop-in follows IdeaFlow's verified reboot solution. An existing Linux account without the workshop ownership marker is rejected. Updates preserve server credentials and volume and take a pre-update dump when the database is running. Updates interrupt only that app. There is no automated migration or rollback of an arbitrary future product; keep release copies and app-specific recovery instructions.
 
 Fresh deployment starts with an empty database plus bootstrap Admin. Local notes/data are **not copied**. If you want to migrate the local workspace, request a separate current-data handover: coherent snapshot, isolated restore test, schema compatibility, server-side verification and credential/session handling before publication. Never restore onto an existing live workspace as part of an update.
 
@@ -74,7 +78,7 @@ Cockpit remains available through the existing SSH tunnel. Sign in as the new ap
 
 ## Git and GitHub
 
-One `.git` directory at the root tracks IdeaFlow, shared tools and every new app. GitHub stays `https://github.com/florescorreia/MINDcan-inspired-architecture.git`; the new directory name does not rename the GitHub repository or alter remote configuration. A single root commit/push includes selected apps:
+One `.git` directory at the root tracks IdeaFlow, shared tools and every new app. GitHub stays `https://github.com/florescorreia/App-Workshop.git`; use `git remote -v` to check your configured destination. A single root commit/push includes selected apps:
 
 ```powershell
 git status

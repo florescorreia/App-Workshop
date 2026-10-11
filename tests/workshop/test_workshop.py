@@ -44,6 +44,25 @@ class WorkshopTest(unittest.TestCase):
         with self.assertRaises(ValueError):workshop.new_app('sample',self.root)
         file=self.root/'apps/sample/app.json';app=json.loads(file.read_text());app['localPort']=8089;file.write_text(json.dumps(app))
         with self.assertRaises(ValueError):workshop.app_config(self.root,'sample')
+    def test_prd_first_creation_preserves_brief_and_rejects_existing_code(self):
+        folder=self.root/'apps/brief-first';(folder/'docs').mkdir(parents=True)
+        brief=b'# My product\r\n\r\nPreserve this exact user contract.\r\n'
+        (folder/'docs/PRD.md').write_bytes(brief)
+        workshop.new_app('brief-first',self.root)
+        self.assertEqual((folder/'docs/PRD.md').read_bytes(),brief)
+        self.assertTrue((folder/'compose.yaml').exists())
+        self.assertFalse((folder/'.env').exists())
+        self.assertFalse((folder/'.git').exists())
+        for name in ('USER_GUIDE.md','VERIFICATION.md','ARCHITECTURE.md'):
+            self.assertTrue((folder/'docs'/name).exists(),name)
+        self.assertIn('Not verified',(folder/'docs/VERIFICATION.md').read_text())
+        for slug,extra in [('has-code','main.py'),('has-notes','docs/notes.md')]:
+            other=self.root/'apps'/slug;(other/'docs').mkdir(parents=True)
+            (other/'docs/PRD.md').write_bytes(brief);(other/extra).write_text('User-owned file')
+            before=(self.root/'workshop.json').read_bytes()
+            with self.assertRaises(ValueError):workshop.new_app(slug,self.root)
+            self.assertEqual((self.root/'workshop.json').read_bytes(),before)
+            self.assertEqual((other/'docs/PRD.md').read_bytes(),brief)
     def test_release_keeps_internal_services_private_and_gateway_untouched(self):
         app=workshop.new_app('sample',self.root)
         ids={key:'sha256:'+'a'*64 for key in app['services']}

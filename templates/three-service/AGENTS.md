@@ -1,3 +1,6 @@
 # {{APP_TITLE}} development contract
 
 Read docs/PRD.md before adding business behavior. This is an independent app in App Workshop. Use this folder's Compose project, image tags, database and named volume; never run IdeaFlow's setup or cleanup against it. Build/test with containers through the explicitly detected Rancher Desktop Moby context. Preserve all other apps and their volumes. Never commit secrets, nested .git directories or data backups. Keep exactly three long-running services for this starter: React/nginx, FastAPI and PostgreSQL. Ordinary stop/rebuild preserves data. Use validated commands, transactional history and optimistic concurrency when implementing business writes. No demo data on startup. Production requires a separate account/volume, HTTPS origin/Secure cookie, backup and restore checks, browser review and verified readiness before reporting deployment. The starter is local development software, not a production-approved product.
+
+
+Treat the user PRD as authoritative; preserve it on generation. Record accepted product changes there. Replace the notes example with the defined product. Keep this app's README, docs/ARCHITECTURE.md, docs/USER_GUIDE.md and docs/VERIFICATION.md aligned with actual behavior; do not convert a planned check into a claimed pass. Read ../../docs/START_NEW_APP.md from this app folder for the shared workflow.

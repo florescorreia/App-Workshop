@@ -1,3 +1,5 @@
+> Document status: dated reference evidence. Counts, imported links, runtime state and old role names describe the recorded run; they are not a current workspace inventory. Current User/Admin behavior and command locations are in [README.md](README.md). Local scripts run from `apps/ideaflow/` after deliberate staging. For current hosting, see [VPS_IDEAFLOW.md](VPS_IDEAFLOW.md); the later web-hardening record supersedes the old closed-443 inventory.
+
 # Non-destructive external assessment — 2026-10-09
 
 Authorized target: the user's VPS `40.160.88.11`, hostname `vps-8104e6c8.vps.ovh.us`, and IdeaFlow HTTPS on TCP 8443. Scope selected by the user: external, unauthenticated, non-destructive assessment. Requests were low concurrency, with no credential guessing, successful login, business mutation, exploitation, denial-of-service test or data export. No server configuration was changed during this assessment.

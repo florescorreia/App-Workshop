@@ -5,6 +5,10 @@ Subsequent application deployment: IdeaFlow uses Caddy HTTPS on TCP 8443, a dedi
 Host: `vps-8104e6c8.vps.ovh.us` (`40.160.88.11`), account `ubuntu`.
 Verified OS: Ubuntu 26.04 LTS, KVM virtualization. This work changes the VPS host only; it does not deploy or change IdeaFlow or its containers.
 
+## Current exposure and document scope
+
+Last hosting verification: 2026-10-11. Public application/redirect TCP ports are 80/443/8443 plus SSH 22. Cockpit 9090, Caddy admin 2019 and frontend 18081 remain private. IdeaFlow has a dedicated application account, volume and failed-login Fail2ban jail; host protections remain in place. Additional apps require their own reviewed port/routing/authentication configuration. The original 2026-10-09 hardening results below correctly describe the earlier SSH-only phase; they are historical evidence, not the current complete port inventory. See [foundation](VPS_FOUNDATION.md) and [workspace operation](APP_WORKSHOP.md).
+
 ## Access
 
 SSH now requires a key. Password and keyboard-interactive SSH authentication and root SSH login are disabled. The account password remains available for `sudo` and console recovery.

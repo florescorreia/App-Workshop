@@ -2,6 +2,8 @@
 
 Version: 1.0 | Date: 2026-10-07 | Target: local Rancher Desktop
 
+> Scope: IdeaFlow only, preserved at `apps/ideaflow/`. Read accepted amendments first; they override conflicting original V1 role/preset/test-separation requirements. Current roles are User/Admin and any active account can perform validated business actions; Admin controls accounts, imports and archival removal. Original initial-build/showcase prompts remain historical; do not use this document as a generic new-app PRD. See [the documentation index](README.md) and [new-app guide](../../../docs/START_NEW_APP.md).
+
 ## Accepted workspace simplification — 2026-10-09
 
 This amendment implements the user's later instructions and supersedes conflicting V1 role, preset-reference and classification requirements below. The financial formulas, explicit lifecycle prerequisites, transaction/event protections, container architecture and additive importer remain in force.

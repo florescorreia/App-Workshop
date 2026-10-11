@@ -4,18 +4,19 @@ Current amendment (2026-10-09): accounts use User/Admin; idea site_id/category_i
 
 # Data dictionary and metric definitions
 
-All IDs are UUID strings except reference-list codes, case sequence integers, readable references and normalized first-of-month dates. Timestamps use PostgreSQL timezone-aware columns and UTC; UI displays America/New_York by default. USD money is `NUMERIC(18,2)`. Nullable amounts mean unassessed/unknown. Nonnegative components may produce negative net benefit or cash flow. PostgreSQL foreign keys, unique keys, checks and snapshot/audit triggers enforce domain integrity.
+All IDs are UUID strings except legacy/reference identifiers, case sequence integers, readable references and normalized first-of-month dates. Timestamps use PostgreSQL timezone-aware columns and UTC; UI displays America/New_York by default. USD money is `NUMERIC(18,2)`. Nullable amounts mean unassessed/unknown. Nonnegative components may produce negative net benefit or cash flow. PostgreSQL foreign keys, unique keys, checks and snapshot/audit triggers enforce domain integrity.
 
 | Table | Purpose and key constraints |
 | --- | --- |
 | app_user | Name, unique email, User/Admin roles, Argon2 password hash, active and record_version. Hashes never returned. |
+| account_event | Append-only actor/subject/action/time/reason for account administration, excluding secrets. |
 | app_session | SHA-256 cookie token digest, user FK, random CSRF token and expiration. |
-| site | Code/label, business unit and active flag. |
-| category | Code/label and active flag. |
+| site | User-created location: stable ID, normalized label_key, optional business unit, active/merge redirect and record_version. |
+| category | User-created category: stable ID, normalized label_key, active/merge redirect and record_version. |
 | idea | Unique UUID/readable IF reference, problem/solution, submitter/owner FKs, site/category FKs, separate stage/disposition, progress 0–100, expected/actual dates, screening note/evidence URL, versions/timestamps, unique external import key and optional demo batch FK. Dates are ordered. |
 | financial_plan | Per-idea unique version; Draft/Approved/Superseded/Invalidated; annual gross/recurring/upfront, nullable probability/confidence 0–1, rationale, approval actor/time, USD only. Approval contents immutable. |
 | financial_plan_period | Plan/month composite key, normalized month, explicit gross/recurring/spend. Approved schedules immutable. |
-| value_period | Idea/month composite key; nullable actual components and nullable Finance-confirmed components, verification actor/time/reason and period record_version. A corrected actual clears sign-off. |
+| value_period | Idea/month composite key; nullable actual components and nullable reviewed components, verification actor/time/reason and period record_version. A corrected actual clears sign-off. |
 | task | Idea/assignee FKs, title, due date, Open/In progress/Done, required flag and completion time. Idea version protects changes. |
 | comment | Idea/actor FKs, body and occurrence timestamp. |
 | idea_event | UUID and unique idea/sequence, event type/activity, from/to stage/disposition, actor, UTC occurrence/recording time, reason, structured old/new metadata and optional fictional import provenance. Append-only. |

@@ -4,7 +4,13 @@ Subsequent deployment: IdeaFlow now runs at **https://vps-8104e6c8.vps.ovh.us:84
 
 Installed on `vps-8104e6c8.vps.ovh.us` (`40.160.88.11`): rootless-capable Podman 5.7.0, Quadlet generators, uidmap/passt, and host Caddy 2.11.7. IdeaFlow has not been deployed; its existing local container configuration is unchanged.
 
-## Public routing
+## Current hosting state
+
+As last verified on 2026-10-11, IdeaFlow is deployed under its dedicated rootless account and app-ideaflow.target with three healthy containers. Shared TCP 80/443 redirect to IdeaFlow HTTPS :8443; frontend :18081 and management :2019/:9090 are loopback-only. Future apps use additional unique HTTPS/loopback ports. Cockpit is installed. Do not replace shared routes or reuse IdeaFlow identities when adding an app. See [workspace operations](APP_WORKSHOP.md), [Cockpit](VPS_COCKPIT.md) and [IdeaFlow hosting](../apps/ideaflow/docs/VPS_IDEAFLOW.md).
+
+The remaining sections preserve the initial 2026-10-09 foundation setup and its test results. Statements about an empty host/404/closed app ports describe that earlier phase. For a new route use the new app's allocated ports, never the IdeaFlow example values.
+
+## Initial public routing (historical)
 
 The existing OVH hostname obtained a trusted Let's Encrypt certificate. No purchased domain is needed. Caddy handles automatic certificate renewal, HTTP redirects, and HTTPS routing. Keep TCP 80 and 443 open for certificate validation and the shared endpoint.
 
@@ -30,7 +36,7 @@ Use explicit `https://` URLs. Keep container ports bound to `127.0.0.1`; only Ca
 
 Caddy's admin API is bound to `127.0.0.1:2019`; it is not public. HTTP/3 is disabled, so no UDP web port is needed. Certificate/account data resides in `/var/lib/caddy`, and configuration in `/etc/caddy`. Protect and back up certificate private keys. Access logs rotate at 10 MiB with five retained backups. Caddy has a 512 MiB memory ceiling and one CPU quota; observed idle memory was approximately 10 MiB.
 
-## Rootless application lifecycle
+## Rootless application lifecycle (initial setup)
 
 Use a dedicated Linux account per real application, with subordinate UID/GID ranges and `loginctl enable-linger ACCOUNT` so its user systemd manager persists after logout. No application accounts or automatic-start application targets have been created yet. Rootless containers were tested under `ubuntu` only and removed afterward.
 
@@ -58,7 +64,7 @@ PodmanArgs=--memory=256m --cpus=0.5
 
 Direct limits were verified inside a rootless container: `--memory=64m --cpus=0.25` produced `memory.max=67108864` and `cpu.max=25000 100000`. Systemd service limits alone should not be assumed to cap all Podman payload processes with split cgroups. Check actual container cgroup limits and account/slice ancestry before enforcing a whole-application budget. Reserve host headroom and sum per-container budgets when deciding which applications may run simultaneously.
 
-## Verification and remaining scope
+## Initial verification and remaining scope (historical)
 
 - Rootless Podman reported cgroup v2, systemd cgroup management, and netavark networking. A resource-limited container executed successfully.
 - A temporary two-container Quadlet target started, stopped both containers, closed the loopback frontend listener, and started again successfully.
