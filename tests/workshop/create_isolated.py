@@ -10,10 +10,10 @@ import workshop
 root=ROOT/'artifacts/workshop-check'
 root.mkdir(parents=True,exist_ok=False)
 shutil.copytree(ROOT/'templates',root/'templates')
-for folder,names in {'frontend':['package.json','package-lock.json'],
-                     'backend':['requirements.lock'],
+for folder,names in {'apps/ideaflow/frontend':['package.json','package-lock.json'],
+                     'apps/ideaflow/backend':['requirements.lock'],
                      'scripts':['workshop.py','workshop.ps1']}.items():
-    (root/folder).mkdir()
+    (root/folder).mkdir(parents=True)
     for name in names:shutil.copy(ROOT/folder/name,root/folder/name)
 shutil.copy(ROOT/'workshop.json',root/'workshop.json')
 workshop.new_app('workshop-check-a',root,port=18881)

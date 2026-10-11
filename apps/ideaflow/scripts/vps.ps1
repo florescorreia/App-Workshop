@@ -11,7 +11,7 @@ $taskPrevious=@{}
 try {
  foreach($taskName in $taskVars){$taskPrevious[$taskName]=[Environment]::GetEnvironmentVariable($taskName,'Process');$taskValue=[Environment]::GetEnvironmentVariable($taskName,'User');if(-not $taskValue){throw "Missing persistent Windows user variable: $taskName"};[Environment]::SetEnvironmentVariable($taskName,$taskValue,'Process')}
  $taskEnvArgs=@();foreach($taskName in $taskVars){$taskEnvArgs+=@('-e',$taskName)}
- $taskArgs=@($Action);if($File){$taskArgs+=@('--file',$File)};if($Command){$taskArgs+=@('--command',$Command)}
- & docker --context $taskContext run --rm @taskEnvArgs --mount "type=bind,source=$taskRoot,target=/workspace" --mount "type=bind,source=$env:USERPROFILE/.ssh,target=/ssh,readonly" ideaflow-vps-tools:1.0.0 @taskArgs
+ $taskArgs=@('scripts/vps.py',$Action);if($File){$taskArgs+=@('--file',$File)};if($Command){$taskArgs+=@('--command',$Command)}
+ & docker --context $taskContext run --rm @taskEnvArgs --mount "type=bind,source=$taskRoot,target=/workspace" --mount "type=bind,source=$env:USERPROFILE/.ssh,target=/ssh,readonly" --entrypoint python ideaflow-vps-tools:1.0.0 @taskArgs
  if($LASTEXITCODE -ne 0){throw "VPS action failed: $Action"}
 } finally {foreach($taskName in $taskPrevious.Keys){[Environment]::SetEnvironmentVariable($taskName,$taskPrevious[$taskName],'Process')}}

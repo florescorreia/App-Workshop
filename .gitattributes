@@ -1,9 +1,9 @@
-infra/vps/*.sh text eol=lf
-infra/vps/*.conf text eol=lf
-infra/vps/*.container text eol=lf
-infra/vps/*.network text eol=lf
-infra/vps/*.target text eol=lf
-infra/vps/*.service text eol=lf
-infra/vps/*.timer text eol=lf
-infra/vps/*.caddy text eol=lf
+apps/ideaflow/infra/vps/*.sh text eol=lf
+apps/ideaflow/infra/vps/*.conf text eol=lf
+apps/ideaflow/infra/vps/*.container text eol=lf
+apps/ideaflow/infra/vps/*.network text eol=lf
+apps/ideaflow/infra/vps/*.target text eol=lf
+apps/ideaflow/infra/vps/*.service text eol=lf
+apps/ideaflow/infra/vps/*.timer text eol=lf
+apps/ideaflow/infra/vps/*.caddy text eol=lf
 templates/** text eol=lf

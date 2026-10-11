@@ -78,7 +78,7 @@ if(-not $taskEntry){throw "Unknown app: $App. Run list or new first."}
 $taskConfig=$taskEntry.Value
 if($taskConfig.kind -eq 'existing'){
  # Preserve the established operations and database identities.
- $taskArgs=@('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $taskRoot 'scripts/ideaflow.ps1'),$Action,'-Context',$taskContext)
+ $taskArgs=@('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $taskRoot "$($taskConfig.path)/scripts/ideaflow.ps1"),$Action,'-Context',$taskContext)
  if($Port){$taskArgs+=@('-Port',"$Port")}
  & powershell @taskArgs
  if($LASTEXITCODE -ne 0){throw "Existing IdeaFlow operation failed: $Action"}

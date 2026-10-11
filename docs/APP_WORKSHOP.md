@@ -1,8 +1,8 @@
 # App Workshop
 
-Build independent applications in one Git repository and run them on the existing VPS. IdeaFlow remains at the repository root. New apps live in `apps/<slug>/`; each has its own product contract, source, Compose project, database volume, credentials and deployment account. Shared tools and templates live at the root. The repository folder and GitHub remote retain their existing names so saved paths, Git history and IdeaFlow deployment commands continue working.
+Build independent applications in one Git repository and run them on the existing VPS. IdeaFlow is preserved at `apps/ideaflow/`. New apps live in `apps/<slug>/`; each has its own product contract, source, Compose project, database volume, credentials and deployment account. Shared tools and templates live at the root. The workspace directory is now `App-Workshop`; the original Git history and GitHub remote are preserved.
 
-Open `App Workshop.code-workspace` in VS Code, or continue opening this directory normally. No sibling copy, source relocation or nested Git repository is needed.
+Open `App Workshop.code-workspace` in VS Code, or continue opening this directory normally. Use this new side-by-side workspace going forward. There is one root Git repository and no nested repositories.
 
 ## Create your next app locally
 
@@ -37,13 +37,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/workshop.ps1 up -App
 
 `down` preserves the app volume. `restore-test` compares every public table with a restored copy in a uniquely named temporary database, removing only that verification database afterward. Avoid concurrent writes during the comparison. Backups and private deployment archives are gitignored. The starter test similarly uses a unique test database rather than altering live notes. Never use `down -v`, prune, database resets or shared volume names.
 
-Existing IdeaFlow operations continue using `scripts/ideaflow.ps1` and `scripts/vps.ps1`. The workspace wrapper delegates supported local IdeaFlow commands to the existing tool.
+Existing IdeaFlow operations continue using `apps/ideaflow/scripts/ideaflow.ps1` and `apps/ideaflow/scripts/vps.ps1`. The workspace wrapper delegates supported local IdeaFlow commands to the existing tool.
 
 ## Deploy a completed app to the VPS
 
 Finish the app's own business tests, security review, account management, least-privilege database roles, schema migration strategy, browser/layout checks and backup/restore verification first. The generated notes starter uses an owner database role and has no failed-login throttling or user administration UI; it is a development starting point. Do not mistake its infrastructure readiness for completed product/security acceptance.
 
-The existing host uses rootless Podman/Quadlet and host Caddy. Local development continues using Docker Compose; do not replace the VPS runtime or move IdeaFlow to Docker. See [foundation](VPS_FOUNDATION.md), [security](VPS_SECURITY.md), [Cockpit](VPS_COCKPIT.md) and [IdeaFlow operation](VPS_IDEAFLOW.md).
+The existing host uses rootless Podman/Quadlet and host Caddy. Local development continues using Docker Compose; do not replace the VPS runtime or move IdeaFlow to Docker. See [foundation](VPS_FOUNDATION.md), [security](VPS_SECURITY.md), [Cockpit](VPS_COCKPIT.md) and [IdeaFlow operation](../apps/ideaflow/docs/VPS_IDEAFLOW.md).
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/workshop.ps1 prepare-vps -App supplier-portal
@@ -66,7 +66,7 @@ Deployment transfers and verifies SHA-256 checksums, creates a dedicated account
 
 Fresh deployment starts with an empty database plus bootstrap Admin. Local notes/data are **not copied**. If you want to migrate the local workspace, request a separate current-data handover: coherent snapshot, isolated restore test, schema compatibility, server-side verification and credential/session handling before publication. Never restore onto an existing live workspace as part of an update.
 
-The route uses the app's own HTTPS port; it does not claim standard 80/443 or replace IdeaFlow's shared redirect. Secure, unique `__Host-<slug>_session` cookies distinguish apps. Cookies are not port-isolated; mutually untrusted apps should use different hostnames and a separate security review. Adapt route headers/CSP to the completed product, following [web hardening](VPS_WEB_HARDENING.md).
+The route uses the app's own HTTPS port; it does not claim standard 80/443 or replace IdeaFlow's shared redirect. Secure, unique `__Host-<slug>_session` cookies distinguish apps. Cookies are not port-isolated; mutually untrusted apps should use different hostnames and a separate security review. Adapt route headers/CSP to the completed product, following [web hardening](../apps/ideaflow/docs/VPS_WEB_HARDENING.md).
 
 Daily backups remain on VPS storage; `backup` also downloads a checksum-verified copy privately to this workstation. Backups are retained without automatic deletion, so monitor disk space and arrange another off-host destination. Provider disk loss is different from a restart. Check summed app budgets against host headroom before adding apps; there is no automatic capacity admission controller.
 
@@ -74,7 +74,7 @@ Cockpit remains available through the existing SSH tunnel. Sign in as the new ap
 
 ## Git and GitHub
 
-One `.git` directory at the root tracks IdeaFlow, shared tools and every new app. GitHub stays `https://github.com/florescorreia/MINDcan-inspired-architecture.git`; the display name App Workshop does not rename the repository or alter remote configuration. A single root commit/push includes selected apps:
+One `.git` directory at the root tracks IdeaFlow, shared tools and every new app. GitHub stays `https://github.com/florescorreia/MINDcan-inspired-architecture.git`; the new directory name does not rename the GitHub repository or alter remote configuration. A single root commit/push includes selected apps:
 
 ```powershell
 git status

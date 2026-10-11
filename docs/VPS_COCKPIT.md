@@ -1,6 +1,6 @@
 # Cockpit access and application control — 2026-10-09
 
-Subsequent deployment: **IdeaFlow application** is available in Application stacks when signed in as the dedicated **ideaflow** Linux account. Its password is in Windows User variable `IDEAFLOW-VPS-COCKPIT-PASSWORD`. The `ubuntu` session does not list that separate account's stack. See [VPS_IDEAFLOW.md](VPS_IDEAFLOW.md) for access and verified operation. Initial installation evidence below predates this deployment.
+Subsequent deployment: **IdeaFlow application** is available in Application stacks when signed in as the dedicated **ideaflow** Linux account. Its password is in Windows User variable `IDEAFLOW-VPS-COCKPIT-PASSWORD`. The `ubuntu` session does not list that separate account's stack. See [VPS_IDEAFLOW.md](../apps/ideaflow/docs/VPS_IDEAFLOW.md) for access and verified operation. Initial installation evidence below predates this deployment.
 
 Installed Cockpit 360, cockpit-podman 124 and cockpit-storaged 360 on the VPS. Cockpit provides machine/resource monitoring, logs, services, storage and Podman container controls. The custom **Application stacks** page starts/stops complete application targets belonging to the signed-in Linux account.
 

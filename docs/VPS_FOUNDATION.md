@@ -1,6 +1,6 @@
 # Podman and Caddy foundation — 2026-10-09
 
-Subsequent deployment: IdeaFlow now runs at **https://vps-8104e6c8.vps.ovh.us:8443** under its dedicated rootless account. See [VPS_IDEAFLOW.md](VPS_IDEAFLOW.md). The initial foundation evidence below describes the state before that deployment.
+Subsequent deployment: IdeaFlow now runs at **https://vps-8104e6c8.vps.ovh.us:8443** under its dedicated rootless account. See [VPS_IDEAFLOW.md](../apps/ideaflow/docs/VPS_IDEAFLOW.md). The initial foundation evidence below describes the state before that deployment.
 
 Installed on `vps-8104e6c8.vps.ovh.us` (`40.160.88.11`): rootless-capable Podman 5.7.0, Quadlet generators, uidmap/passt, and host Caddy 2.11.7. IdeaFlow has not been deployed; its existing local container configuration is unchanged.
 

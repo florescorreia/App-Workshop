@@ -22,7 +22,9 @@ def app_config(root,slug):
     valid_slug(slug)
     entry=catalog(root)['apps'][slug]
     path=(root/entry['path']).resolve()
-    if entry['kind']=='existing':return entry,None,path
+    if entry['kind']=='existing':
+        if slug!='ideaflow' or entry['path']!='apps/ideaflow':raise ValueError('Unsupported existing app identity/path')
+        return entry,None,path
     if not path.is_relative_to((root/'apps').resolve()) or path==(root/'apps').resolve():raise ValueError('App path escapes apps/')
     app=json.loads((path/'app.json').read_text())
     if app['slug']!=slug or app['composeProject']!=entry['composeProject'] or app['localPort']!=entry['localPort'] or app['vps']!=entry['vps']:
@@ -76,9 +78,9 @@ def new_app(slug,root=ROOT,port=None):
         for key,value in values.items():content=content.replace('{{'+key+'}}',value)
         dest.write_text(content)
     # Reuse the already tested, pinned dependency set without app source/data.
-    (target/'backend'/'requirements.lock').write_bytes((root/'backend'/'requirements.lock').read_bytes())
+    (target/'backend'/'requirements.lock').write_bytes((root/'apps/ideaflow/backend'/'requirements.lock').read_bytes())
     for name in ('package.json','package-lock.json'):
-        (target/'frontend'/name).write_bytes((root/'frontend'/name).read_bytes())
+        (target/'frontend'/name).write_bytes((root/'apps/ideaflow/frontend'/name).read_bytes())
     package=json.loads((target/'frontend'/'package.json').read_text());package['name']=slug+'-frontend';package['version']='0.1.0'
     (target/'frontend'/'package.json').write_text(json.dumps(package,indent=2)+'\n')
     lock=json.loads((target/'frontend'/'package-lock.json').read_text());lock['name']=package['name'];lock['version']=package['version'];lock['packages']['']['name']=package['name'];lock['packages']['']['version']=package['version']

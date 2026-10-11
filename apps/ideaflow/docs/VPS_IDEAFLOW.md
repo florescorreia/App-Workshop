@@ -39,7 +39,7 @@ If you change the Admin password in Settings, update its Windows variable privat
 Build the transient SSH tool image if needed:
 
 ```powershell
-docker --context default build -t ideaflow-vps-tools:1.0.0 infra/vps-tools
+docker --context default build -t ideaflow-vps-tools:1.0.0 ../../infra/vps-tools
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/vps.ps1 stack -Command status
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/vps.ps1 stack -Command stop
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/vps.ps1 stack -Command start
@@ -47,7 +47,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/vps.ps1 stack -Comma
 
 Stop/start preserves the named volume. The Caddy route remains present while stopped, so a public request receives a gateway error until the stack becomes ready. Startup waits for database, backend and frontend health in that order. App target and daily backup timer are enabled; the dedicated account has lingering and a local Podman socket. A scoped `/etc/systemd/system/user@1001.service.d/zz-ideaflow.conf` stops the app before restarting its rootless user manager and overrides the host's five-second user-manager shutdown timeout with 180 seconds. No other account's manager configuration is changed.
 
-For Cockpit, use the SSH tunnel in [VPS_COCKPIT.md](VPS_COCKPIT.md), open **http://127.0.0.1:9090**, and sign in as **ideaflow** using its Windows credential variable. **Application stacks → IdeaFlow application → Start/Stop** controls this stack. `ubuntu` remains the host administration account and does not list another account's application target. SSH still admits only the existing `ubuntu` key; the new account does not receive SSH access or sudo rights. Cockpit authentication through an encrypted SSH channel and its actual stack-control helper were verified; Cockpit GUI clicking was not exercised.
+For Cockpit, use the SSH tunnel in [VPS_COCKPIT.md](../../../docs/VPS_COCKPIT.md), open **http://127.0.0.1:9090**, and sign in as **ideaflow** using its Windows credential variable. **Application stacks → IdeaFlow application → Start/Stop** controls this stack. `ubuntu` remains the host administration account and does not list another account's application target. SSH still admits only the existing `ubuntu` key; the new account does not receive SSH access or sudo rights. Cockpit authentication through an encrypted SSH channel and its actual stack-control helper were verified; Cockpit GUI clicking was not exercised.
 
 ## Data, resources and HTTPS
 

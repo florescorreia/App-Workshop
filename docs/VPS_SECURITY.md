@@ -1,6 +1,6 @@
 # VPS security handover — 2026-10-09
 
-Subsequent application deployment: IdeaFlow uses Caddy HTTPS on TCP 8443, a dedicated rootless account and an independent volume. SSH and management endpoint restrictions remain in place. See [VPS_IDEAFLOW.md](VPS_IDEAFLOW.md); earlier port checks below describe the pre-gateway state.
+Subsequent application deployment: IdeaFlow uses Caddy HTTPS on TCP 8443, a dedicated rootless account and an independent volume. SSH and management endpoint restrictions remain in place. See [VPS_IDEAFLOW.md](../apps/ideaflow/docs/VPS_IDEAFLOW.md); earlier port checks below describe the pre-gateway state.
 
 Host: `vps-8104e6c8.vps.ovh.us` (`40.160.88.11`), account `ubuntu`.
 Verified OS: Ubuntu 26.04 LTS, KVM virtualization. This work changes the VPS host only; it does not deploy or change IdeaFlow or its containers.

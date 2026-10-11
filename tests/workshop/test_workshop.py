@@ -9,8 +9,8 @@ class WorkshopTest(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name)
         shutil.copytree(ROOT/'templates',self.root/'templates')
-        shutil.copytree(ROOT/'frontend',self.root/'frontend',ignore=shutil.ignore_patterns('node_modules','dist'))
-        (self.root/'backend').mkdir();shutil.copy(ROOT/'backend/requirements.lock',self.root/'backend/requirements.lock')
+        shutil.copytree(ROOT/'apps/ideaflow/frontend',self.root/'apps/ideaflow/frontend',ignore=shutil.ignore_patterns('node_modules','dist'))
+        (self.root/'apps/ideaflow/backend').mkdir();shutil.copy(ROOT/'apps/ideaflow/backend/requirements.lock',self.root/'apps/ideaflow/backend/requirements.lock')
         shutil.copy(ROOT/'workshop.json',self.root/'workshop.json')
         # Production catalog may contain user-created apps. Tests start from
         # the unchanged IdeaFlow reservation only, in an isolated directory.
