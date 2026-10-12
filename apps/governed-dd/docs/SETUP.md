@@ -1,5 +1,7 @@
 # Local setup and configuration
 
+The user requested private local UI credentials in app `.env`. Run `scripts/export-login-env.ps1 -Context default` to capture portal/native login values without printing them, preserving existing settings. This file is Git-ignored. If the Windows Docker transport fails, the exporter can use Docker inside the verified Rancher Moby VM through rdctl; it verifies existing volumes before reading. If both transports are unavailable, the file marks the export incomplete. This exports UI logins, not database, agent, backup or provider keys.
+
 Run from the repository root with Rancher Desktop in Moby mode. The PowerShell manager discovers and verifies the context; this workstation uses `default`. All Python, Node, Codex, builds and tests execute in containers. No generic generator or deployer is used.
 
 ```powershell

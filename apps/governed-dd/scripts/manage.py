@@ -66,7 +66,8 @@ elif a.action in ['up','tenant-start']:
 elif a.action in ['down','status','tenant-stop']:
  tenant=t() if a.action=='tenant-stop' else None
  if tenant:admin('active','--tenant',tenant,'--value','false')
- c('ps' if a.action=='status' else 'stop',tenant=tenant)
+ if tenant:c('--profile','*','stop',tenant=tenant)
+ else:c('ps' if a.action=='status' else 'stop',tenant=tenant)
 elif a.action in ['member-add','member-remove']:
  args=[a.action,'--tenant',t(),'--subject',a.subject]
  if a.action=='member-add':args+=['--role',a.role]

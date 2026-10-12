@@ -12,7 +12,7 @@ From Overview choose **Open Paperclip**. Paperclip has separate native authentic
 
 Upload supplied sources in Explorer first and put their exact object/version links in the Paperclip task. Explain content and access limitations. Paperclip attachments are not automatically indexed: use the Explorer upload link for governed source preservation. A file attached only to a task is not automatically searchable evidence.
 
-An Explorer upload opens the saved source automatically. Copy its address into your task so the analyst uses that exact version. If you already attached a document in Paperclip, ask your administrator to import it with its task and attachment IDs. The import verifies original bytes and preserves those IDs; retrying does not create another source version.
+An Explorer upload opens the saved source automatically. In its details panel, use **Copy link** beneath **Exact version link**, then paste into your Paperclip task. You can also select the displayed link and copy it manually if clipboard access is blocked. The same control appears when you open a source from Sources and on other governed records. If you already attached a document in Paperclip, ask your administrator to import it with its task and attachment IDs. The import verifies original bytes and preserves those IDs; retrying does not create another source version.
 
 Fictional example: “Use the supplied 2024 and 2025 revenue document, calculate comparable growth, explain assumptions, register definitions and exact evidence, and provide a report for review.” Public search needs project authorization and a configured provider. Missing or inaccessible evidence must remain a limitation.
 
