@@ -1,8 +1,0 @@
-local/
-backups/
-.env
-__pycache__/
-node_modules/
-dist/
-.pytest_cache/
-*.pyc

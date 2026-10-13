@@ -1,7 +1,0 @@
-[Unit]
-Description=Governed DD control plane (review template)
-Requires=governed-dd-control-postgres.service governed-dd-keycloak.service governed-dd-portal.service governed-dd-gateway.service
-After=governed-dd-control-postgres.service governed-dd-keycloak.service governed-dd-portal.service governed-dd-gateway.service
-
-[Install]
-WantedBy=default.target
