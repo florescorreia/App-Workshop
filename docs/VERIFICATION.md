@@ -26,7 +26,7 @@ The complete verification run includes eight tests: seven generator/release chec
 
 ## Operational limits
 
-A user-created brief appeared at `apps/governed-dd/docs/PRD.md` during this revision. It was left unchanged and unregistered; it is outside this documentation/generator implementation scope. Its product-specific stack requires review before applying the three-service starter conventions.
+A product brief appeared during the historical documentation review and was outside the implementation scope of that review.
 
 No new product brief was invented, no app registered in the live catalog, no demo import performed and no application/VPS started, restarted or deployed during this revision. Browser tests and full IdeaFlow business regression were not rerun for documentation changes; the previous source-preserving relocation checks (28 backend tests, build/readiness and isolated restore) are in [RELOCATION.md](RELOCATION.md), with prior browser/deployment/reboot evidence in [IdeaFlow verification](../apps/ideaflow/docs/VERIFICATION.md).
 
