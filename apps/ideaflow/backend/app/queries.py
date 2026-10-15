@@ -8,7 +8,9 @@ from .financial import app_today, add_month, net, sum_known, schedule_metrics, r
 def serialize(obj): return {c.name:scalar_json(getattr(obj,c.name)) for c in obj.__table__.columns if c.name!='is_test'}
 
 def selected_ideas(db,filters,removed=False):
+    from .vave_models import Case
     q=select(Idea).outerjoin(Site,Idea.site_id==Site.id).where(Idea.removed_at.is_not(None) if removed else Idea.removed_at.is_(None))
+    q=q.where(~select(Case.idea_id).where(Case.idea_id==Idea.id).exists())
     for key in ('site_id','category_id','owner_id','stage','disposition'):
         if filters.get(key): q=q.where(getattr(Idea,key)==filters[key])
     if filters.get('business_unit'): q=q.where(Site.business_unit==filters['business_unit'])

@@ -1,55 +1,24 @@
 import {test,expect} from '@playwright/test';
-
-test('copied VPS workspace renders over trusted HTTPS and signs out',async({page})=>{
- test.setTimeout(180000);
- const failures:string[]=[];
- const policyViolations:string[]=[];
- await page.exposeFunction('recordPolicyViolation',(directive:string)=>policyViolations.push(directive));
- await page.addInitScript(()=>document.addEventListener('securitypolicyviolation',event=>{
-   (window as any).recordPolicyViolation(event.violatedDirective);
- }));
- page.on('pageerror',e=>failures.push(e.message));
- page.on('response',r=>{if(r.url().includes('/api/v1/')&&r.status()>=500)failures.push(`${r.status()} ${r.url()}`);});
- await page.goto('/');
- const publicResponse=await page.request.get('/');
- expect(publicResponse.headers()['content-security-policy']).toContain("script-src 'self'");
- expect(publicResponse.headers()['strict-transport-security']).toBe('max-age=86400');
- expect(publicResponse.headers()['server']).toBeUndefined();
- expect(publicResponse.headers()['via']).toBeUndefined();
- for(const path of ['/api/docs','/api/openapi.json','/.env','/.git/config']){
-   expect((await page.request.get(path)).status()).toBe(404);
- }
- await page.getByLabel('Email',{exact:true}).fill(process.env.IDEAFLOW_VPS_ADMIN_EMAIL!);
- await page.getByLabel('Password',{exact:true}).fill(process.env.IDEAFLOW_VPS_ADMIN_PASSWORD!);
- await page.getByRole('button',{name:'Sign in →',exact:true}).click();
- await expect(page.locator('h1')).toHaveText('A clearer path from idea to impact');
- const cookies=await page.context().cookies();
- const session=cookies.find(c=>c.name==='__Host-ideaflow_session');
- expect(session).toBeTruthy();expect(session!.secure).toBe(true);expect(session!.httpOnly).toBe(true);expect(session!.sameSite).toBe('Strict');
- const listResponse=await page.request.get('/api/v1/ideas?page_size=100');expect(listResponse.ok()).toBeTruthy();
- const list=await listResponse.json();expect(list.total).toBe(2);
- expect(list.items.map((i:any)=>i.reference).sort()).toEqual(['IF-00205','IF-00206']);
- const businessBefore:any={};
- for(const idea of list.items){businessBefore[idea.id]=await(await page.request.get('/api/v1/ideas/'+idea.id)).json();}
- for(const path of ['/dashboards/portfolio','/dashboards/process','/dashboards/value','/my-work','/references']){
-   const response=await page.request.get('/api/v1'+path);expect(response.ok(),path).toBeTruthy();
- }
- const observedProcess=await(await page.request.get('/api/v1/dashboards/process')).json();expect(observedProcess.case_count).toBe(2);expect(observedProcess.rework.numerator).toBe(1);
- const idea=list.items.find((i:any)=>i.reference==='IF-00205');
- const paths=['/','/ideas','/pipeline','/process','/value','/guide','/settings','/ideas/'+idea.id+'?tab=financials','/ideas/'+idea.id+'?tab=history'];
- for(const width of [1440,1280,390]){
-   await page.setViewportSize({width,height:width===1440?900:width===1280?720:844});
-   for(const [index,path] of paths.entries()){
-     await page.goto(path);await expect(page.locator('h1').first()).toBeVisible();await expect(page.locator('.loading')).toHaveCount(0);
-     await expect(page.getByRole('alert')).toHaveCount(0);
-     await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),{message:`Page width: ${path} ${width}`}).toBe(true);
-     await page.screenshot({path:`/artifacts/vps-${width}-${index}.png`});
-   }
- }
- for(const idea of list.items){const after=await(await page.request.get('/api/v1/ideas/'+idea.id)).json();const {financials:ignoredBefore,...before}=businessBefore[idea.id];const {financials:ignoredAfter,...savedAfter}=after;expect(savedAfter).toEqual(before);}
- await page.setViewportSize({width:1440,height:900});await page.goto('/');await page.getByRole('button',{name:'Sign out',exact:true}).click();await expect(page.getByRole('button',{name:'Sign in →',exact:true})).toBeVisible();
- expect((await page.request.get('/api/v1/session/me')).status()).toBe(401);
- expect(failures).toEqual([]);
- expect(policyViolations).toEqual([]);
- console.log('VPS HTTPS, copied references, dashboards, desktop/mobile views and logout passed; no business mutations.');
+test('VAVE evaluation preserves identities, evidence, reporting and responsive access',async({page})=>{
+ test.skip(process.env.VAVE_PUBLIC!=='true','Public or isolated production-copy check');test.setTimeout(180000);
+ const pilot=process.env.VAVE_PILOT==='true',errors:string[]=[],violations:string[]=[];
+ await page.exposeFunction('recordPolicyViolation',(d:string)=>violations.push(d));await page.addInitScript(()=>document.addEventListener('securitypolicyviolation',e=>(window as any).recordPolicyViolation(e.violatedDirective)));
+ page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.url().includes('/api/v1/')&&r.status()>=500)errors.push(`${r.status()} ${r.url()}`);});
+ await page.goto('/');const response=await page.request.get('/');if(!pilot)expect(response.headers()['content-security-policy']).toContain("script-src 'self'");
+ if(!pilot){expect(response.headers()['strict-transport-security']).toBe('max-age=86400');expect(response.headers()['server']).toBeUndefined();expect(response.headers()['via']).toBeUndefined();}
+ if(!pilot)for(const path of ['/api/docs','/api/openapi.json','/.env','/.git/config'])expect((await page.request.get(path)).status()).toBe(404);
+ await page.getByLabel('Email',{exact:true}).fill(process.env.IDEAFLOW_VPS_ADMIN_EMAIL!);await page.getByLabel('Password',{exact:true}).fill(process.env.IDEAFLOW_VPS_ADMIN_PASSWORD!);await page.getByRole('button',{name:/Sign in/}).click();await expect(page.locator('h1')).toHaveText('VAVE programs');
+ const cookie=(await page.context().cookies()).find(c=>c.name===(pilot?'ideaflow_session':'__Host-ideaflow_session'));expect(cookie).toBeTruthy();expect(cookie!.secure).toBe(!pilot);expect(cookie!.httpOnly).toBe(true);expect(cookie!.sameSite).toBe('Strict');
+ const programs=await(await page.request.get('/api/v1/vave/programs')).json(),p=programs.find((p:any)=>p.name==='Product cost excellence — VAVE evaluation');expect(p).toBeTruthy();
+ const list=await(await page.request.get('/api/v1/vave/programs/'+p.id+'/ideas')).json();expect(list).toHaveLength(2);expect(list.map((i:any)=>i.reference).sort()).toEqual(['IF-00205','IF-00206']);const before:any={};
+ for(const i of list){const c=await(await page.request.get('/api/v1/vave/ideas/'+i.id)).json();before[i.id]=c;expect(c.legacy_available).toBe(true);expect(c.data.title).toBe(i.reference==='IF-00205'?'Simplify the actuator mounting bracket':'Introduce returnable packaging for actuator deliveries');expect(c.maturity).toBe(i.reference==='IF-00205'?2:0);expect(c.actuals).toEqual({});expect(c.approved).toBeNull();const prior=await(await page.request.get('/api/v1/vave/ideas/'+i.id+'/legacy')).json();expect(prior.idea.id).toBe(i.id);expect(prior.idea.title).toBe(i.reference==='IF-00205'?'Reduce repeated dispatch checks':'Agree a daily dispatch cutoff');}
+ const report=await(await page.request.get('/api/v1/vave/programs/'+p.id+'/report')).json(),t=report.totals['Cost reduction'];expect(Number(t.opportunity)).toBe(36000);expect(Number(t.approved_forecast)).toBe(0);expect(Number(t.verified)).toBe(0);expect(t.unknown_applications).toBe(1);expect(Number(report.targets['Cost reduction'].target)).toBe(50000);expect((await(await page.request.get('/api/v1/ideas?page_size=100')).json()).total).toBe(0);
+ const bracket=list.find((i:any)=>i.reference==='IF-00205');
+ for(const width of [1440,1280,390]){await page.setViewportSize({width,height:width===1440?900:width===1280?720:844});for(const [n,path] of ['/','/vave/my-work','/vave/guide','/settings','/vave/programs/'+p.id,'/vave/ideas/'+bracket.id].entries()){
+ await page.goto(path);await expect(page.locator('h1').first()).toBeVisible();await expect(page.getByRole('alert')).toHaveCount(0);
+ if(path.includes('/programs/')){await page.getByLabel('Search ideas',{exact:true}).fill('ACT-BR-104');await expect(page.getByRole('link',{name:/Simplify the actuator/})).toBeVisible();await expect(page.getByRole('link',{name:/Introduce returnable/})).toHaveCount(0);await page.getByLabel('Search ideas',{exact:true}).fill('');await page.getByRole('button',{name:'Leadership and finance',exact:true}).click();await expect(page.getByRole('heading',{name:'From opportunity to verified value'})).toBeVisible();await page.getByRole('button',{name:/Unweighted opportunity/}).click();await expect(page.getByRole('heading',{name:'Supporting applications and reconciliation'})).toBeVisible();}
+ if(path.includes('/ideas/')){for(const tab of ['Concept','Economics','Delivery','Gates','Evidence and discussion','History']){await page.getByRole('button',{name:tab,exact:true}).click();await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2)).toBe(true);}await expect(page.getByRole('heading',{name:'Prior IdeaFlow evidence'})).toBeVisible();}
+ await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),{message:`Width ${width} ${path}`}).toBe(true);await page.screenshot({path:`/artifacts/vps-vave-${width}-${n}.png`});}}
+ for(const i of list)expect(await(await page.request.get('/api/v1/vave/ideas/'+i.id)).json()).toEqual(before[i.id]);await page.setViewportSize({width:1440,height:900});await page.goto('/');await page.getByRole('button',{name:'Sign out',exact:true}).click();await expect(page.getByRole('button',{name:/Sign in/})).toBeVisible();expect((await page.request.get('/api/v1/session/me')).status()).toBe(401);expect(errors).toEqual([]);expect(violations).toEqual([]);
+ console.log('VAVE IDs, prior evidence, EUR reporting, search, desktop/mobile, security and logout passed without business writes.');
 });

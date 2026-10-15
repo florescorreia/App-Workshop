@@ -135,7 +135,16 @@ def main():
                 with opener.open(base+path,timeout=20) as response:result=json.load(response)
                 print(f'HTTPS {path}: PASS'+(f" ({result['total']} ideas)" if 'total' in result else ''))
             # Login creates an ordinary expiring session; no business writes.
-            print('Existing Admin credentials and Secure session after reboot: PASS')
+            print('Existing Admin credentials and Secure session: PASS')
+        elif args.action=='vave-update':
+            if not args.file:parser.error('--file (prepared release folder) required')
+            from vave_release import deploy
+            deploy(client,args.file)
+        elif args.action in ('vave-adapt-preview','vave-adapt-apply'):
+            if not args.file:parser.error('--file (private adaptation proposal) required')
+            from vave_adapt import prepare,apply_on_vps
+            if args.action=='vave-adapt-preview':prepare(Path(args.file))
+            else:apply_on_vps(client,Path(args.file))
         else:parser.error('Unknown action')
 
 if __name__=='__main__':main()

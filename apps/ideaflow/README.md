@@ -1,10 +1,16 @@
 # IdeaFlow
 
+Version **1.2.0 / schema 0006** is deployed and publicly verified. VAVE is the landing page, with program access, M0–M6 evidence gates, independent financial decisions, benefit applications, attachments, rollout, personal work, notifications and scoped reconciliation. Open [VAVE programs](https://vps-8104e6c8.vps.ovh.us:8443/vave). Read the [differential audit](docs/VAVE_REQUIREMENT_AUDIT.md), [accepted decisions](docs/VAVE_DELTA.md) and [user guide](docs/USER_GUIDE.md).
+
+The two user-authorized test records are now **IF-00205 — Simplify the actuator mounting bracket** (M2) and **IF-00206 — Introduce returnable packaging for actuator deliveries** (Draft/M0). Original IDs, account/password hashes, financial rows and history are preserved; prior evidence is readable under History. Illustrative opportunity/targets do not constitute approved or verified savings. Their explicit adaptation is separate from startup/code deployment, which creates no business data.
+
+The interface follows the public [Roland Berger Germany design reference](docs/DESIGN_REFERENCE.md), with bundled Inter. Earlier IdeaFlow screens remain in a navigation disclosure. The instructions below describe the original shared workspace; VAVE membership rights and independent review supersede its general business permissions and USD-only reporting within programs.
+
 This application now lives in `apps/ideaflow/`. Run the following app-specific commands from that directory, or use the shared root wrapper with `-App ideaflow`. The VPS is authoritative for current live data; local data is an independent historical copy. Local containers are stopped outside tests.
 
 VPS deployment: **https://vps-8104e6c8.vps.ovh.us:8443**. Your current local accounts and business history were copied on 2026-10-09; existing passwords work. Access credentials are persisted in Windows **User** environment variables. See [VPS operation and credentials](docs/VPS_IDEAFLOW.md) and [verification evidence](docs/VERIFICATION.md). Local and VPS databases are independent after that snapshot; no demo was loaded during deployment.
 
-IdeaFlow turns improvement proposals into assigned work, approved monthly plans and reviewed outcomes. React/TypeScript and bundled Plotly/React Flow run behind nginx; FastAPI and PostgreSQL are the other two long-running services. Version 1.0.0. The runtime has no external API dependency.
+IdeaFlow turns improvement proposals into assigned work, approved monthly plans and reviewed outcomes. React/TypeScript and bundled Plotly/React Flow run behind nginx; FastAPI and PostgreSQL are the other two long-running services. Version 1.2.0. The runtime has no external API dependency.
 
 A fresh installation starts **empty**, with only the bootstrap Admin. Existing volumes preserve their records; local containers are currently stopped outside tests. Locations, categories and business units are defined by users as work develops; no prior Admin setup is needed. The local workspace was explicitly cleared on 2026-10-09 after a verified backup, retaining the Admin login and all configuration/volumes. Old HarborWorks showcase guides are historical evidence; their records are no longer loaded. Start with the [manual UX walkthrough](docs/UX_WALKTHROUGH.md), written for an existing User account, with optional Admin exercises at the end. The retained local snapshot later contains user-created ideas; it is independent of production. Durable records, sessions, approved snapshots, results and append-only events live in `ideaflow_pgdata`.
 

@@ -22,12 +22,20 @@ def revoke_sessions(db,id):
     db.execute(delete(Session).where(Session.user_id==id))
 
 def deletion_preview(db,user,target):
+    from .vave_models import Case, Program, ProgramEvent, Notice, Preference
     owned=list(db.scalars(select(Idea).where(Idea.owner_id==target.id,Idea.removed_at.is_(None),Idea.disposition.in_(['Active','On hold']),Idea.stage!='Realized')))
     tasks=list(db.scalars(select(Task).join(Idea,Task.idea_id==Idea.id).where(Task.assignee_id==target.id,Task.status!='Done',Idea.removed_at.is_(None),Idea.disposition.in_(['Active','On hold']),Idea.stage!='Realized')))
     protected=target.id==user.id or target.email==os.environ['ADMIN_EMAIL'].lower()
     # Any durable FK attribution makes deletion a retirement instead of row removal.
     references=[(Idea,Idea.submitter_id),(Idea,Idea.owner_id),(Idea,Idea.removed_by),(IdeaEvent,IdeaEvent.actor_id),(FinancialPlan,FinancialPlan.approved_by),(ValuePeriod,ValuePeriod.verified_by),(Task,Task.assignee_id),(Comment,Comment.actor_id),(DemoBatch,DemoBatch.importer),(AccountEvent,AccountEvent.actor_id)]
+    references.append((ProgramEvent,ProgramEvent.actor_id))
     used=any(db.scalar(select(func.count()).select_from(model).where(column==target.id)) for model,column in references)
+    for c in db.scalars(select(Case)):
+        if c.status in ('Active','Draft','On hold'):
+            if c.data.get('owner_id')==target.id and not any(i.id==c.idea_id for i in owned): owned.append(db.get(Idea,c.idea_id))
+            tasks.extend(type('OpenVaveAction',(),{'id':a['id'],'idea_id':c.idea_id,'title':a['title']})() for a in c.data['actions'] if a['owner_id']==target.id and a['status']!='Done')
+        if target.id in str(c.data) or target.id in str(c.actuals): used=True
+    if any(target.id in str(p.data['members']) for p in db.scalars(select(Program))): used=True
     return {'mode':'retire' if used else 'remove','allowed':not protected and not owned and not tasks,
         'protected':protected,'record_version':target.record_version,
         'open_ideas':[{'id':i.id,'reference':i.reference,'title':i.title} for i in owned],

@@ -1,10 +1,22 @@
-# IdeaFlow on the VPS — 2026-10-09
+# IdeaFlow on the VPS
+
+## Current VAVE release — 2026-10-15
+
+IdeaFlow **1.2.0 / schema 0006** runs at [VAVE programs](https://vps-8104e6c8.vps.ovh.us:8443/vave). Existing credentials work. The two user-authorized test ideas were explicitly adapted: IF-00205 is “Simplify the actuator mounting bracket” (M2); IF-00206 is “Introduce returnable packaging for actuator deliveries” (Draft/M0). Their IDs, all five accounts/password hashes, original financial records and 27 original events remain; seven VAVE events were appended. Prior evidence appears under History. The evaluation program has illustrative EUR estimates/targets, zero approved forecast and zero verified benefit. No accounts or demo batches were created.
+
+Immutable release: `local/releases/vave-20261015T173846Z/` (private). Fresh pre-update production dump: `backups/vps-vave-20261015T173953Z.dump`, SHA-256 `f5a5f9e77944ee42b0bf0238653e16d6bafae311d966b43ed0c8281a3b900b48`. It was restored into a unique temporary database and compared across all 20 public tables and the reference sequence before update. Current dump, old image archive, prior Quadlets and credential checksums remain in `/home/ideaflow/backups/vave-update-20261015T173953Z/`. Older rollback folders `vave-update-20261015T164437Z/` and `vave-update-20261015T132654Z/` are retained. Conversion preservation evidence is in `/home/ideaflow/backups/vave-adaptation-20261015T174146Z/`.
+
+The rootless `ideaflow` account (UID 1001), `ideaflow-pgdata`, network, three-service architecture, Caddy route, credentials, limits and backup timer remain unchanged. Maintenance pause: **27.2 seconds**. Public Chromium verification passed **2 tests**, with **1 intentionally skipped** production mutation test. Checks covered VAVE entry, adapted identities, prior evidence, EUR reporting/search, desktop/mobile, CSP, secure cookies, blocked routes and logout. Existing Admin authentication, public version readiness and port checks passed. See [VERIFICATION.md](VERIFICATION.md) for exact images, commands and final service/preservation evidence.
+
+Use [REDEPLOY.md](REDEPLOY.md) for a reviewed update. `scripts/vps.ps1 vave-update -File <prepared-release-directory>` verifies a fresh production backup before changing image pins. Conversion used a separately prepared private proposal and `vave-adapt-apply`, never a historical database restore. Do not rerun the original installer or reset storage. Routine operations and credential instructions below remain applicable; older counts and names are dated history.
+
+## Initial deployment and reboot evidence — 2026-10-09
 
 **Full VPS reboot verified on 2026-10-09:** host rebooted at approximately **18:03:52 America/New_York**, and IdeaFlow's three containers became healthy automatically by **18:04:34**. Every database table, including accounts/password hashes, stored sessions and the reference sequence, matched the fresh pre-reboot snapshot exactly. The current test snapshot contains five accounts, two ideas and 27 idea-history events. Existing Admin login and Cockpit authentication passed afterward. See the full-reboot evidence at the end of [VERIFICATION.md](VERIFICATION.md).
 
 App-relative commands below run from `apps/ideaflow/`; shared root build is `docker --context <detected-context> build -t ideaflow-vps-tools:1.0.0 infra/vps-tools`. The tools wrapper uses explicit Python entrypoints, so the image does not require an app-specific default entrypoint.
 
-Open **https://vps-8104e6c8.vps.ovh.us:8443**. The VPS runs IdeaFlow 1.0.0 using the existing rootless Podman/Quadlet and Caddy foundation. Exactly three application containers run under the dedicated Linux account `ideaflow` (UID 1001): React/nginx, FastAPI and PostgreSQL. Local build/test tooling uses the detected Rancher Desktop Moby context `default`; no host Python or Node is required.
+Open **https://vps-8104e6c8.vps.ovh.us:8443**. The initial release was IdeaFlow 1.0.0; the current release is listed above. The app uses the existing rootless Podman/Quadlet and Caddy foundation. Exactly three application containers run under the dedicated Linux account `ideaflow` (UID 1001): React/nginx, FastAPI and PostgreSQL. Local build/test tooling uses the detected Rancher Desktop Moby context `default`; no host Python or Node is required.
 
 The user selected **copy current workspace**. A coherent PostgreSQL snapshot taken on October 9 at approximately **16:28 America/New_York / 20:28 UTC** was restored into a new, separate VPS volume before backend startup. Accounts, password hashes, idea references, history, classifications, plans, tasks and results are preserved. Existing browser sessions were excluded; sign in again. Later local edits are not synchronized to the VPS. No fictional dataset was loaded.
 

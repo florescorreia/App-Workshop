@@ -18,6 +18,8 @@ def lock_idea(db,idea_id,version=None,allow_removed=False):
     lock(db)
     idea = db.scalar(select(Idea).where(Idea.id == idea_id).with_for_update())
     if not idea: fail('Idea not found',404)
+    from .vave_models import Case
+    if db.get(Case,idea_id): fail('Use the VAVE program workspace for this idea and its validated commands',409)
     if version is not None and idea.record_version != version: fail('This idea changed since you opened it. Refresh to see the latest version; your edits were not saved.',409)
     if idea.removed_at and not allow_removed: fail('This idea is removed and read-only. An Admin must restore it before work can continue.',409)
     return idea

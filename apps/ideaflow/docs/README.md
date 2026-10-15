@@ -5,6 +5,8 @@ IdeaFlow is the existing reference app under `apps/ideaflow/`, running on the VP
 | Document | Scope/status |
 | --- | --- |
 | [PRD.md](PRD.md) | Authoritative IdeaFlow contract; later accepted amendments override original conflicting V1 requirements |
+| [VAVE_DELTA.md](VAVE_DELTA.md) / [USER_GUIDE.md](USER_GUIDE.md) | VAVE first-release mapping, program memberships, independent decisions and user journey |
+| [VAVE_REQUIREMENT_AUDIT.md](VAVE_REQUIREMENT_AUDIT.md) / [DESIGN_REFERENCE.md](DESIGN_REFERENCE.md) | Differential requirement evidence and public Roland Berger Germany visual reference |
 | [UX_WALKTHROUGH.md](UX_WALKTHROUGH.md) | Current normal User walkthrough, with optional Admin account/removal exercises |
 | [ARCHITECTURE.md](ARCHITECTURE.md) / [DATA_DICTIONARY.md](DATA_DICTIONARY.md) | Current schema, transactional behavior, roles and calculations |
 | [DEMO_IMPORT.md](DEMO_IMPORT.md) | Current explicit additive importer contract; never automatic |
@@ -15,4 +17,4 @@ IdeaFlow is the existing reference app under `apps/ideaflow/`, running on the VP
 | [VPS_EXTERNAL_ASSESSMENT.md](VPS_EXTERNAL_ASSESSMENT.md), [VPS_PORT_REVIEW.md](VPS_PORT_REVIEW.md), [VPS_WEB_HARDENING.md](VPS_WEB_HARDENING.md) | Dated security findings and remediation; later web hardening supersedes the closed-443 snapshot |
 | [START_AND_DEMO_PROMPTS.md](START_AND_DEMO_PROMPTS.md) | Reference-app maintenance/import prompts; not a new-app implementation contract |
 
-Run app-relative commands from `apps/ideaflow/`; commands explicitly using `apps/ideaflow/...` run from the root. Local containers are stopped outside testing. `http://localhost:8080` works only after deliberate local startup. Production URL is https://vps-8104e6c8.vps.ovh.us:8443. Account roles are User and Admin; any active user can perform valid business actions, while Admin manages access/import/removal. Verification records review with an actor/reason, not independent Finance certification.
+Run app-relative commands from `apps/ideaflow/`; commands explicitly using `apps/ideaflow/...` run from the root. Local containers are stopped outside testing. `http://localhost:8080` works only after deliberate local startup. Production URL is https://vps-8104e6c8.vps.ovh.us:8443. Account roles remain User and Admin. Original shared-workspace ideas retain their existing User/Admin business rules; VAVE program memberships govern scoped decisions and require independent Finance review and actual verification. See [VAVE_DELTA.md](VAVE_DELTA.md) for the differential rules.

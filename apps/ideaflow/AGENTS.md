@@ -1,5 +1,7 @@
 # IdeaFlow implementation contract
 
+VAVE amendment (2026-10-15): read docs/VAVE_DELTA.md and the accepted VAVE amendment in docs/PRD.md. Keep account roles User/Admin; VAVE program memberships govern scoped business decisions and independent financial verification. The user explicitly authorized adapting the two existing test ideas, including renaming them. Use previewed, version-checked adoption commands; retain IDs, accounts/passwords, original lifecycle snapshot, all old financial rows and history. New VAVE cases start at M0 with no copied approvals or actuals. New VAVE program cases use additive storage and the protected existing idea-event log. Do not combine program application value types or reinterpret historical approvals. Startup and code upgrades create no program/pilot data.
+
 Read docs/PRD.md before changing domain behavior. Exactly three long-running services: React/nginx frontend, FastAPI backend, PostgreSQL. Build and test with containers, using the detected Rancher Desktop Moby context explicitly. Preserve other projects, configuration and volumes; never use destructive resets. PostgreSQL is authoritative. Every business mutation and append-only event share a transaction, with optimistic concurrency. Stage, disposition, approval and verification use explicit validated commands. Startup is empty except references and bootstrap Admin. Demo imports are explicit, additive, validated, replayed and batch-idempotent. Never commit credentials or load demo data automatically. Record actual verification and limitations.
 
 

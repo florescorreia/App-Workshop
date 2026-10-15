@@ -14,7 +14,7 @@ from .queries import serialize, idea_row, selected_ideas, value_dashboard, idea_
 from .financial import ramp, app_today
 from .process import discover
 
-app=FastAPI(title='IdeaFlow',version='1.0.0',docs_url=None,openapi_url='/api/openapi.json',redoc_url=None)
+app=FastAPI(title='IdeaFlow',version='1.2.0',docs_url=None,openapi_url='/api/openapi.json',redoc_url=None)
 P='/api/v1'
 
 @app.get('/api/docs',include_in_schema=False)
@@ -38,11 +38,11 @@ async def integrity_handler(request,exc):
     return __import__('starlette.responses',fromlist=['JSONResponse']).JSONResponse({'detail':'This change conflicts with an existing record or validation rule. Refresh and check the fields.'},409)
 
 @app.get('/api/health/live')
-def live(): return {'status':'live','version':'1.0.0'}
+def live(): return {'status':'live','version':'1.2.0'}
 @app.get('/api/health/ready')
 def ready(db=Depends(get_db)):
-    if db.scalar(text('SELECT version_num FROM alembic_version'))!='0005': raise HTTPException(503,'Migration not ready')
-    return {'status':'ready','version':'1.0.0'}
+    if db.scalar(text('SELECT version_num FROM alembic_version'))!='0006': raise HTTPException(503,'Migration not ready')
+    return {'status':'ready','version':'1.2.0'}
 
 @app.post(P+'/session/login')
 def login(data:S.Login,response:Response,request:Request,db=Depends(get_db)):
@@ -108,6 +108,8 @@ def account_events(user=Depends(current_user),db=Depends(get_db)):
     return [{**serialize(e),'actor_name':db.get(User,e.actor_id).name} for e in db.scalars(select(AccountEvent).order_by(AccountEvent.occurred_at.desc()).limit(100))]
 @app.get(P+'/references')
 def refs(user=Depends(current_user),db=Depends(get_db)):
+    from .vave import external_only
+    if external_only(db,user): return {'sites':[],'categories':[],'users':[public_user(user)],'stages':[],'external_only':True}
     return {'sites':[serialize(x) for x in db.scalars(select(Site).where(Site.active==True).order_by(Site.label))],'categories':[serialize(x) for x in db.scalars(select(Category).where(Category.active==True).order_by(Category.label))],
         'users':[public_user(x) for x in db.scalars(select(User).order_by(User.name))],'stages':D.STAGES}
 @app.post(P+'/references/{kind}')
@@ -299,3 +301,6 @@ def demo_import(data:dict,dry_run:bool=True,user=Depends(current_user),db=Depend
 @app.get(P+'/demo/batches')
 def demo_batches(user=Depends(current_user),db=Depends(get_db)):
     require(user,'Admin');return [serialize(b) for b in db.scalars(select(DemoBatch).order_by(DemoBatch.recorded_at))]
+
+from .vave import router as vave_router
+app.include_router(vave_router)

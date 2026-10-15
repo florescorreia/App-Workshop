@@ -15,7 +15,7 @@ services:
       retries: 30
     restart: unless-stopped
   backend:
-    image: ideaflow-backend:1.0.0
+    image: ideaflow-backend:1.2.0
     pull_policy: never
     build: ./backend
     environment:
@@ -38,7 +38,7 @@ services:
       retries: 30
     restart: unless-stopped
   frontend:
-    image: ideaflow-frontend:1.0.0
+    image: ideaflow-frontend:1.2.0
     pull_policy: never
     build: ./frontend
     ports:

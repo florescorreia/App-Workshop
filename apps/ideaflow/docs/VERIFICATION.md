@@ -1,4 +1,142 @@
+# VAVE 1.2 differential completion — 2026-10-15
+
+**Implemented, deployed and publicly verified:** https://vps-8104e6c8.vps.ovh.us:8443/vave. Scope follows the complete supplied DOCX, its first-release priorities and the later user authorization to adapt existing test records and the look/feel. Requirement-by-requirement evidence and subsequent-release limits are in [VAVE_REQUIREMENT_AUDIT.md](VAVE_REQUIREMENT_AUDIT.md). DOCX SHA-256: `e01709fc79aaa936cb13a13eb49581ed58f28e91c51e0a2e2ae3781f9b421f12`.
+
+## Local checks actually run
+
+- Root/app contracts, complete PRD and amendments, DOCX, README, hosting/redeployment and shared VPS security/foundation guidance were read. Git state, current source and production 1.1.0/schema 0006 were inspected before this update.
+- Containerized backend and TypeScript/Vite frontend builds passed with explicit Rancher Desktop Moby context `default`. Existing locked frontend dependencies previously reported zero npm audit vulnerabilities; no dependency changes were added for this enhancement.
+- Final backend suite: **39 passed**, **39.76 seconds**, one existing Starlette TestClient deprecation warning. Tests cover A1–A9, gates, independent review, overlap/partial rollout, financial calculations, corrected actuals, imports/exports, role boundaries, structured filters, unknown/scoped reports, notices/preferences/work and legacy adoption/concurrency. The added verification regression initially omitted required cash spend; its request was corrected, the container rebuilt and the complete suite rerun successfully.
+- Local mutating browser journey: **1 passed, 1 intentionally skipped** (21.9 seconds), against the isolated verification database. It covered capture, blocked M1, owner/action/date, economics, screening, reload, attachment/discussion and 1440/1280/390 layouts. No production business mutation was performed by this test.
+- Restored a verified production dump into the **fresh isolated** pilot volume `ideaflow_vave_pilot_pgdata` on port 18884. Preview/application of both authorized adaptations passed. All 5 account rows/password hashes, original financial/task/comment/reference rows, idea identities/lifecycle fields and all 27 original events matched. Seven VAVE events were appended; no approval or actual was copied. Pilot browser checks: **2 passed, 1 intentionally skipped** (21.0 seconds). Caddy-specific HTTPS assertions were reserved for the real public endpoint.
+- Verification backup `backups/vave-verification-20261015T173311Z.dump`, SHA-256 `762cdcd03e6b50307798fb583d656312f2d99efe0f76d5ff87e4bc3b01be73b2`, was restored into a unique temporary database. All 20 public tables and the reference sequence compared exactly. Ordinary down/up with container rebuild preserved the same rows. Existing volumes and other apps were retained.
+- Python AST, VAVE PowerShell parser and Git whitespace checks passed. Stored Windows User credential values were absent from all **154 IdeaFlow deliverables** checked; private env/proposals/backups/evidence/releases are Git-ignored. Values were withheld.
+
+Private local evidence: `artifacts/vave-1.2-local-verification.json`, pilot adoption fingerprint files, screenshots, reviewed proposals and immutable release assets.
+
+## Production update, adaptation and final checks
+
+Final release: **1.2.0**, existing schema **0006**, immutable directory `local/releases/vave-20261015T173846Z/`.
+
+| Asset | Verified identifier |
+| --- | --- |
+| Backend content ID | `9cb301d060e450f8a10df078d56fd13bfd59f63ac8723858cc40fa7eca3048c9` |
+| Frontend content ID | `eeeb57ddd9811988b1345c70a8a603403f58f158bebdf41b9982085b354993c1` |
+| Image archive SHA-256 | `49e2ea65a29e419f8d1e353fd4381e2e7aa201609ddf070dcc9494b559d0a60a` |
+| Fresh production dump | `backups/vps-vave-20261015T173953Z.dump` |
+| Production dump SHA-256 | `f5a5f9e77944ee42b0bf0238653e16d6bafae311d966b43ed0c8281a3b900b48` |
+| Current rollback assets | `/home/ideaflow/backups/vave-update-20261015T173953Z/` |
+| Conversion preservation evidence | `/home/ideaflow/backups/vave-adaptation-20261015T174146Z/` |
+
+The updater checksummed the transfer, retained previous images/Quadlets, paused only IdeaFlow, took a fresh coherent dump, restored it into a unique temporary database, compared all 20 tables and the reference sequence, downloaded and verified the dump, then replaced only backend/frontend image pins. Existing 1.1 and pre-VAVE rollback assets remain. Maintenance pause: **27.2 seconds**. No production database reset, snapshot replacement, credential change, volume deletion or demo import occurred.
+
+Before conversion, production preserved 5 accounts, 6 account events, 2 ideas, 27 idea events, 6 financial plan versions, 24 plan periods, 1 result, 1 task, 1 comment, 1 category and 1 location. No VAVE data was created by deployment. Public readiness confirmed 1.2.0; unchanged Admin login and original shared-workspace endpoints passed.
+
+The reviewed private proposal `local/vave-adaptation/production-20261015.json` was applied separately through version-checked authenticated commands after deployment/backup verification:
+
+| Retained reference | New evaluation concept | VAVE state |
+| --- | --- | --- |
+| IF-00205 | Simplify the actuator mounting bracket | Active / M2; critical fatigue risk and missing functional acceptance prevent M3 |
+| IF-00206 | Introduce returnable packaging for actuator deliveries | Draft / M0; unknown economics and unassigned idea owner |
+
+Program: “Product cost excellence — VAVE evaluation”, ID `fc64d73c-df60-46f3-9e52-c84614db3982`, EUR, 2026. The bracket's two plant applications total €100,000 annual gross/€90,000 annual net run rate; eligible in-year net opportunity is €36,000, separate €20,000 spend and €16,000 net cash. Packaging opportunity is Unknown. Target €50,000 is illustrative, with €40,000/€10,000 child allocations. Approved forecast, implemented and verified benefits remain **zero**. No real savings or sponsor acceptance is asserted.
+
+Post-conversion and post-public-check fingerprints retained all account/password, original financial/task/comment/reference rows, original lifecycle fields, source IDs/sequence and all 27 earlier events. Current idea events: **34**; VAVE programs/cases: **1/2**; demo batches: **0**. Prior snapshots and financial evidence are readable under History and excluded from VAVE totals. Ordinary sessions and new VAVE rows/events are the only permitted additional records.
+
+Public Chromium: **2 passed, 1 intentionally skipped**, **23.4 seconds**. Checks cover trusted HTTPS, CSP, secure/HttpOnly/Strict session cookie, blocked docs/private paths, VAVE landing, setup cancellation, both renamed references/IDs, retained evidence, exact EUR opportunity/unknown/target/zero approved and verified totals, structured search, report drill-down, desktop/mobile widths, unchanged case details and logout/401. No page errors, API 5xx or CSP violations occurred. Public 8443 is reachable; 18081, 8000, 5432, 9090 and 2019 are inaccessible.
+
+Final inspection matched both running image IDs, unchanged `ideaflow-pgdata`, exactly three healthy services under the rootless `ideaflow` account, active app target/backup timer, unchanged server credential-file checksums, and no failed host/user units. Caddy, UFW, Fail2ban and auditd were active. Both VAVE cases replay to their immutable maturity/status decisions. Private final evidence: `artifacts/vave-1.2-final-verification.json`, the current release's `deployment.json`, reviewed adaptation/applied/preservation files and server `final-public.json`.
+
+Commands actually run from `apps/ideaflow/` include:
+
+```powershell
+docker --context default compose build backend frontend
+docker --context default compose -p ideaflow-verification -f compose.yaml -f compose.verify.yaml -f artifacts/vave-compose.yaml up -d --wait
+docker --context default compose -p ideaflow-verification -f compose.yaml -f compose.verify.yaml -f artifacts/vave-compose.yaml exec -T backend pytest -q
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/browser-vave.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/browser-vave.ps1 -Pilot
+powershell -NoProfile -ExecutionPolicy Bypass -File artifacts/vave-local-check.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/prepare-vave.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/vps.ps1 vave-update -File local/releases/vave-20261015T173846Z
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/vps.ps1 app-check
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/vps.ps1 vave-adapt-apply -File local/vave-adaptation/production-20261015.json
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/browser-vave.ps1 -Public
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/vps.ps1 ports-check
+powershell -NoProfile -ExecutionPolicy Bypass -File artifacts/vave-final-check.ps1
+```
+
+Both isolated IdeaFlow test stacks were stopped with ordinary Compose down after checks. Volumes ideaflow_pgdata, ideaflow_verification_pgdata and ideaflow_vave_pilot_pgdata remain. Governed-dd containers remain running. Final Git scope/whitespace and stored-credential scans passed; all 45 changed paths are confined to IdeaFlow.
+
+Limits: no intentional production failure/rollback or new VPS reboot was performed. The existing reboot evidence remains historical. This release does not claim official Roland Berger brand certification, licensed corporate fonts, actual pilot sponsor acceptance, real savings, full FR15 replication or richer optimization/integrations. See the requirement audit and design reference. Source changes remain uncommitted in the existing repository.
+
+---
+
 > Document status: dated reference evidence. Counts, imported links, runtime state and old role names describe the recorded run; they are not a current workspace inventory. Current User/Admin behavior and command locations are in [README.md](README.md). Local scripts run from `apps/ideaflow/` after deliberate staging. No fictional import is part of startup, documentation review or deployment.
+
+# Previous 1.1 VAVE differential delivery — 2026-10-15
+
+Implemented the supplied [VAVE Tracking PRD](VAVE_Tracking_PRD.docx) in the existing application. The accepted scope and requirement mapping are in [VAVE_DELTA.md](VAVE_DELTA.md). Version **1.1.0**, additive Alembic revision **0006**, runs at **https://vps-8104e6c8.vps.ovh.us:8443**; program entry is **/vave**. The dated 1.0.0 evidence below is historical.
+
+## Local implementation checks
+
+All builds/tests used containers and explicit Rancher Desktop Moby context **default**, with engine identity checked. No host Python/Node, new application scaffold or additional runtime service was introduced. Existing governed-dd containers remained running on 8081. The isolated IdeaFlow verification project used 18883 and `ideaflow_verification_pgdata`; existing historical test records were preserved rather than importing a fresh demo batch.
+
+| Check actually run | Result |
+| --- | --- |
+| Backend build and complete `pytest -q` | **35 passed** in 67.47 seconds on the final backend; one existing Starlette/AnyIO deprecation warning. Tests use a unique database and preserve the staged application database. |
+| Frontend container build | TypeScript and Vite production build passed; pinned dependencies and existing build settings retained. |
+| VAVE API journey | M0–M6, missing prerequisites, explicit reviews, independent Finance/actual verification, partial rollout, reapproval and retained snapshots passed. |
+| Economics | $10→$9, 100,000 annual units: $100,000 gross/$90,000 net run rate; 40,000 eligible units: $36,000 net recurring; $20,000 spend: $16,000 net cash. Unknown/negative value and overlap/alternative exclusions passed. |
+| Access and audit | External program/shared-record boundaries, restricted intake, file checksum/download, controlled import preview/confirmation/idempotency, stale edits, legacy endpoint bypass rejection and append-only program audit passed. |
+| Gate correction | Attempts to advance M1 using Return/Reopen target 6 return 422 with unchanged maturity, status, version, history, reviews and data. Valid same-maturity reopening and backward rework still pass. |
+| Local browser | VAVE capture/submission, missing prerequisites, M1 screening, application economics, nested reload, attachment/discussion and six workspace tabs: **1 passed, 1 intentionally skipped**. Desktop 1440/1280 and mobile 390 layouts captured/reviewed. Full M2–M6 evidence is from API tests, not a complete browser walkthrough. |
+| Backup/rebuild persistence | `artifacts/vave-local-check.ps1`: all **20 tables and reference sequence** matched isolated restore and ordinary down/up/rebuild. Private dump: `backups/vave-verification-20261015T132320Z.dump`. Snapshot included 214 preserved verification ideas, including three VAVE browser fixtures; this was never transferred to production. |
+| Replay and scripts | Original lifecycle and VAVE decision replay passed; final Python source/operator AST and VAVE PowerShell parsing passed. `git diff --check` passed. |
+
+During the final backend rebuild, a command initially omitted `compose.verify.yaml` and briefly attached the test stack to the local primary volume. The additive migration ran there; an isolated test run was interrupted when the mount was corrected. The complete rerun above passed. A separate audit restored the latest local primary backup (`backups/ideaflow-20261011-120801.dump`) into a temporary database and compared it to the primary volume: **every existing table, including accounts/password hashes, sessions and history, and the reference sequence matched exactly**; the only additions were six empty VAVE tables and schema metadata. No snapshot was restored over the primary database. The temporary audit stack was removed with ordinary `down`, preserving the volume. Production was unaffected by this local staging mistake.
+
+## Deployment and production preservation
+
+The initial VAVE release and the gate-corrected release each received a fresh production dump, isolated restore comparison, checksum-verified off-host download and retained old images/Quadlets. No initial-copy installer, reset, demo import, credential regeneration or database snapshot replacement was used. The dedicated rootless account/UID, Podman network, `ideaflow-pgdata` volume, resource limits, Quadlets, daily backup timer and host Caddy route remained in place.
+
+Final immutable release: `local/releases/vave-20261015T164349Z/` (private). Actual deployment record: `deployment.json` in that folder.
+
+- Backend content ID: `81492b71e344e8ebb7bc0ebd952784226256b344d99448c8c050faff2f503b49`.
+- Frontend content ID: `8e50e9ff9a0d6b7c0466adb85b946bbeea6d6b8da6a27f82d0822d364ef11c58`.
+- Image archive SHA-256: `83b85573aa2c28368490036a54d1dc3e503d27ef86ac932a57eac596d947f9dc`.
+- Fresh final backup: `backups/vps-vave-20261015T164437Z.dump`, SHA-256 `df509eec5484d5f83b9becb89911798d79b60e44311e09f03423a774f47f679d`.
+- Final server backup/rollback assets: `/home/ideaflow/backups/vave-update-20261015T164437Z/`; pre-VAVE assets also retained under `vave-update-20261015T132654Z/`.
+- Recorded maintenance pause: **26.1 seconds** for the corrected update; **27.1 seconds** for the initial additive release.
+
+The final dump was restored into a unique temporary database and compared across all 20 public tables and the reference sequence. Live rows matched before and after backup and image replacement. Server `backend.env` and `postgres.env` checksums remained unchanged. Both final image IDs were verified against the running containers; all three containers were healthy. The application target and daily backup timer were active. Caddy, UFW, Fail2ban and auditd were active with no failed host/user units.
+
+Production retained **5 accounts, 6 account events, 2 ideas, 27 idea events, 6 plans, 24 plan periods, 1 result, 1 task, 1 comment, 1 category and 1 location**. Reference sequence and all preexisting rows/password hashes matched. VAVE program/case/evidence/notice/preference/program-event tables remained empty, and demo batches remained zero. A post-public-check comparison again matched all **19 non-session tables** plus the sequence; ordinary login/logout activity was explicitly excluded from that last session comparison. Private evidence: `artifacts/vave-final-verification.json` and server `final-public.json`.
+
+Commands actually executed from this app folder:
+
+```powershell
+docker --context default compose -p ideaflow-verification -f compose.yaml -f compose.verify.yaml -f artifacts/vave-compose.yaml build backend
+docker --context default compose -p ideaflow-verification -f compose.yaml -f compose.verify.yaml -f artifacts/vave-compose.yaml up -d --wait --wait-timeout 180
+docker --context default compose -p ideaflow-verification -f compose.yaml -f compose.verify.yaml -f artifacts/vave-compose.yaml exec -T backend pytest -q
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/prepare-vave.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/vps.ps1 vave-update -File local/releases/vave-20261015T164349Z
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/vps.ps1 app-check
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/browser-vave.ps1 -Public
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/vps.ps1 ports-check
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/vps.ps1 sudo -Command 'cd /home/ideaflow; runuser -u ideaflow -- env XDG_RUNTIME_DIR=/run/user/1001 podman exec ideaflow-backend python -m app.reconciliation'
+```
+
+Public API checks passed trusted HTTPS readiness, existing Admin login/Secure session, both preserved ideas and all original dashboards. Event reconciliation reported **2 original ideas / 27 events / 0 VAVE cases**, with unchanged planned net 3,600 and recorded net 515. Public port checks found 8443 reachable and 18081/8000/5432/9090/2019 inaccessible. Credentials were read from Windows User environment variables and were never printed or committed.
+
+Public containerized Chromium checks completed: **2 passed, 1 intentionally skipped in 23.0 seconds**. VAVE login/entry, program setup cancellation, walkthrough, loaded desktop/mobile screenshots and mobile navigation/logout passed without page errors. The existing workspace check verified IF-00205/IF-00206, original dashboards/financials/history, 1440/1280/390 layouts, CSP, secure cookie attributes, blocked documentation/dotfile paths and logout, without business mutations. The skipped test is the mutating VAVE journey, deliberately confined to local verification.
+
+The initial public VAVE test attempted logout while the mobile menu was closed, checked session state before asynchronous logout completed, and took some screenshots before loading finished. The harness now opens the menu, waits for sign-in to appear, and waits for the VAVE heading/actions before screenshots. The completed rerun above passed; loaded public screenshots at `artifacts/vave-public-1440.png` and `vave-public-390.png` were visually reviewed.
+
+The isolated verification stack was stopped using ordinary `down` with all three Compose files. Both `ideaflow_verification_pgdata` and the primary `ideaflow_pgdata` volumes remain. No local IdeaFlow containers remain running; its temporary verification URL was **http://localhost:18883**. Governed-dd's existing containers and loopback 8081 listener remained running. Final Git scope is confined to `apps/ideaflow`; stored credential-value scanning of changed text files passed, and private environments, dumps, release archives and artifacts are ignored. Source changes remain uncommitted.
+
+## Scope limits
+
+The production VAVE browser journey opens program setup and cancels it; mutations and gate completion were exercised only in isolated local databases. No production pilot/program or test business record was created. Independent-account API tests cover financial authorization; only the stored Admin credential was used for live login. Broader FR15 replication, richer scenario/resource optimization, assisted discovery and operational integrations remain subsequent-release scope from the differential PRD. No intentional production rollback or new host reboot was performed for this release; prior reboot evidence below is historical.
 
 # Verified local delivery — IdeaFlow 1.0.0
 

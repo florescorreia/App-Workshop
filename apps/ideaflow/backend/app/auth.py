@@ -24,6 +24,9 @@ def current_user(request: Request, db=Depends(get_db)):
         if not secrets.compare_digest(request.headers.get('X-CSRF-Token',''),session.csrf):
             raise HTTPException(403,'Session check failed. Refresh and try again.')
     request.state.session = session
+    from .vave import external_only
+    if external_only(db,user) and not (request.url.path.startswith('/api/v1/vave/') or request.url.path.startswith('/api/v1/session/') or request.url.path=='/api/v1/references'):
+        raise HTTPException(403,'External access is limited to explicitly shared program records')
     return user
 
 def require(user,*roles):

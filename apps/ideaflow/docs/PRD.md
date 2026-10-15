@@ -1,6 +1,18 @@
 # IdeaFlow — Product Requirements Document
 
-Version: 1.0 | Date: 2026-10-07 | Target: local Rancher Desktop
+Version: 1.2 | Updated: 2026-10-15 | Local Rancher Desktop and existing VPS
+
+## Accepted VAVE evaluation and design amendment — 2026-10-15
+
+The user explicitly authorized adapting and renaming the two existing test ideas to fit VAVE. Adopt IF-00205 and IF-00206 through an Admin preview/confirmation with optimistic versions. Preserve accounts/passwords, idea IDs/references, original lifecycle snapshots, financial rows, tasks, discussion and every prior event. Fresh VAVE cases never inherit approvals or verified results. Keep prior evidence readable in History and excluded from VAVE totals. The bracket evaluation may pass M1/M2 completeness review independently of its owner, while missing functional acceptance and a critical fatigue risk prevent M3. The packaging concept remains an unquantified M0 draft. Estimates and program targets are illustrative evaluation data, never a savings claim. This explicit one-time operator action supersedes the earlier prohibition on converting these existing records; startup/deployment itself remains data-free.
+
+Make VAVE the landing page and primary navigation. Retain the original screens under Earlier IdeaFlow. Improve structured portfolio filters/grouping, personal work, notices/preferences, scoped period reporting and leadership read access. Actuals must fall within defined elapsed application observation periods; verification excludes the application owner, idea owner and recorder.
+
+Adapt the visual language using the current public [Roland Berger Germany site](https://www.rolandberger.com/de/) as reference: black/white editorial structure, strong headings, square forms, thin rules, blue accents and restrained red details. Retain bundled Inter rather than distributing proprietary RBDesign fonts. This is an inspired application treatment, not official corporate brand certification. See [DESIGN_REFERENCE.md](DESIGN_REFERENCE.md) and [VAVE_REQUIREMENT_AUDIT.md](VAVE_REQUIREMENT_AUDIT.md).
+
+## Accepted VAVE differential amendment — 2026-10-15
+
+Implement the supplied [VAVE Tracking PRD](VAVE_Tracking_PRD.docx) within the existing application. [VAVE_DELTA.md](VAVE_DELTA.md) records the accepted mapping and practical minimum decisions. This amendment overrides prior business decision rules, USD-only reporting and deferred attachments for VAVE programs. Account roles, original shared-workspace records/lifecycle, three-service architecture, credentials, transactional append-only history and production storage remain preserved. Program memberships govern VAVE access and independent financial decisions. No historic idea, account or plan is automatically migrated into a VAVE program or relabeled as VAVE-approved evidence. Broader FR15 replication and scenario optimization remain subsequent-release scope as specified by the differential PRD.
 
 > Scope: IdeaFlow only, preserved at `apps/ideaflow/`. Read accepted amendments first; they override conflicting original V1 role/preset/test-separation requirements. Current roles are User/Admin and any active account can perform validated business actions; Admin controls accounts, imports and archival removal. Original initial-build/showcase prompts remain historical; do not use this document as a generic new-app PRD. See [the documentation index](README.md) and [new-app guide](../../../docs/START_NEW_APP.md).
 

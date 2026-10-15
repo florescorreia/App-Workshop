@@ -21,6 +21,7 @@ def bootstrap():
             cur.execute('GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO ideaflow_app')
             cur.execute('REVOKE UPDATE, DELETE, TRUNCATE ON idea_event FROM ideaflow_app')
             cur.execute('REVOKE UPDATE, DELETE, TRUNCATE ON account_event FROM ideaflow_app')
+            cur.execute('REVOKE UPDATE, DELETE, TRUNCATE ON vave_program_event FROM ideaflow_app')
             cur.execute('REVOKE CREATE ON SCHEMA public FROM PUBLIC')
     with SessionLocal.begin() as db:
         if not db.scalar(select(User).where(User.email == os.environ['ADMIN_EMAIL'].lower())):
